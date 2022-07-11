@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  Name:
+    Type: String
+    Default: lambda
+    Description: Project name
+
+Mappings:
+  Constant:
+    Value:
+      FuncName: gtech-auto-posting-app-lambda
+      LambdaMemorySize: 1024
+
+Globals:
+  Function:
+    Runtime: python3.8
+    Architectures:
+      - x86_64
+    Timeout: 300
+    CodeUri: .
+
+Resources:
+  GTechAutoPostingLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Setting up gtech-auto-posting-app Lambda
+      FunctionName: !FindInMap [ Constant, Value, FuncName ]
+      Handler: !Join [ '.', !FindInMap [ Constant, Value, FuncName ], 'lambda_handler' ] ]
+      MemorySize: !FindInMap [ Constant, Value, LambdaMemorySize ]
+
+Outputs:
+  DMPPingLambdaARN:
+    Description: gtech-auto-posting-app Lambda ARN
+    Value: !GetAtt  GTechAutoPostingLambda.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-ARN"
+  DMPPingLambdaName:
+    Description: gtech-auto-posting-app Lambda Name
+    Value: !Ref GTechAutoPostingLambda
+    Export:
+      Name: !Sub "${AWS::StackName}-Name"

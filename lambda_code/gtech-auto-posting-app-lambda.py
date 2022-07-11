@@ -11,8 +11,10 @@ url_gtech_1 = os.enviorn.get('url_gtech_1')
 url_gtech_2 = os.enviorn.get('url_gtech_2')
 ad_pic_s3_location = os.enviorn.get('ad_pic_s3_location')
 
-def openURL(url_gtech_1):
+def lambda_handler(event, context):
+    openURL(url_gtech_1)
 
+def openURL(url_gtech_1):
     try:
         content = '''
 <p class="li1" style="font-size:12px;line-height:0.5;font-family:'Helvetica Neue';"><span style="font-size:26px;">
@@ -71,7 +73,3 @@ def openURL(url_gtech_1):
 
     finally:
         time.sleep(5)
-
-
-if __name__ == "__main__":
-    openURL(url_gtech_1)
