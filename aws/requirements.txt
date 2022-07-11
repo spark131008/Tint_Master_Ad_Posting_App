@@ -1,5 +1,4 @@
 boto3==1.6.18
 botocore==1.9.18
-selenium==3.14
-chromedriver==2.43
-severless-chrome==1.0.0-55
+selenium==2.53.6
+chromedriver-installer==0.0.6
