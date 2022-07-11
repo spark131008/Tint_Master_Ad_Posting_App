@@ -31,7 +31,7 @@ Resources:
       Role: !ImportValue gtech-auto-posting-app-lambda-iam-role-ARN
       MemorySize: !FindInMap [ Constant, Value, LambdaMemorySize ]
       Layers:
-        - arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:chromedriver:1
+        - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:chromedriver:1
 
 Outputs:
   GTechAutoPostingLambdaARN:
