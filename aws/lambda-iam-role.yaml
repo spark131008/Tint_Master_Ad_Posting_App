@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Sets up IAM Role for dmp-ping-process Lambda.
+
+Resources:
+  GTechAutoPostingLambdaRole:
+      Type: AWS::IAM::Role
+      Properties:
+        PermissionsBoundary: !Sub "arn:aws:iam::${AWS::AccountId}:policy/GithubActionsIamResourcePermissionsBoundary"
+        RoleName: !Sub "gtech-auto-posting-app-lambda-role-${AWS::Region}"
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action:
+                - sts:AssumeRole
+
+Outputs:
+  GTechAutoPostingLambdaRoleARN:
+    Value: !GetAtt GTechAutoPostingLambdaRole.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-ARN"

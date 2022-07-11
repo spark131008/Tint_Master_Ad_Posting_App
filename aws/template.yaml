@@ -22,28 +22,13 @@ Globals:
     CodeUri: .
 
 Resources:
-  GTechAutoPostingLambdaRole:
-      Type: AWS::IAM::Role
-      Properties:
-        PermissionsBoundary: !Sub "arn:aws:iam::${AWS::AccountId}:policy/GithubActionsIamResourcePermissionsBoundary"
-        RoleName: !Sub "gtech-auto-posting-app-lambda-role-${AWS::Region}"
-        AssumeRolePolicyDocument:
-          Version: 2012-10-17
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action:
-                - sts:AssumeRole
-
   GTechAutoPostingLambda:
     Type: AWS::Serverless::Function
     Properties:
       Description: Setting up gtech-auto-posting-app Lambda
       FunctionName: !FindInMap [ Constant, Value, FuncName ]
       Handler: !Join [ '.', [ !FindInMap [ Constant, Value, FuncName ], 'lambda_handler' ] ]
-      Role: !Ref GTechAutoPostingLambdaRole
+      Role: arn:aws:iam::${AWS::AccountId}:role/gtech-auto-posting-app-lambda-iam-role
       MemorySize: !FindInMap [ Constant, Value, LambdaMemorySize ]
 
 Outputs:
