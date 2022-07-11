@@ -15,6 +15,7 @@ def lambda_handler(event, context):
     openURL()
 
 def openURL():
+    print('start')
     try:
         content = '''
 <p class="li1" style="font-size:12px;line-height:0.5;font-family:'Helvetica Neue';"><span style="font-size:26px;">
@@ -65,8 +66,11 @@ def openURL():
 
         driver = webdriver.Chrome(chrome_options=chrome_options)
         driver.get(url_gtech_1)
+        print('open web browser')
+
         driver.type(id_gtech, into='mb_id', id='login_id')
         driver.type(pwd_gtech, into='mb_password', id='login_pw')
+        print('entered id/pwd')
 
         driver.click(text='로그인')
         driver.click(text='광고')
