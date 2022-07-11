@@ -28,7 +28,7 @@ Resources:
       Description: Setting up gtech-auto-posting-app Lambda
       FunctionName: !FindInMap [ Constant, Value, FuncName ]
       Handler: !Join [ '.', [ !FindInMap [ Constant, Value, FuncName ], 'lambda_handler' ] ]
-      Role: arn:aws:iam::${AWS::AccountId}:role/gtech-auto-posting-app-lambda-iam-role
+      Role: !ImportValue gtech-auto-posting-app-lambda-iam-role-ARN
       MemorySize: !FindInMap [ Constant, Value, LambdaMemorySize ]
 
 Outputs:
