@@ -42,9 +42,6 @@ def openURL():
 <p class="p1" style="font-size:12px;line-height:0.9;font-family:'Helvetica Neue';"><span style="font-size:48px;">678-731-7177</span></p>
         '''
 
-        a = urllib.request.urlopen(url_gtech_1)
-        print(a.getcode())
-
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument('--headless')
         chrome_options.add_argument('--no-sandbox')
