@@ -2,6 +2,7 @@ import urllib.request
 import urllib.error
 import time
 import os
+import shutil
 from selenium import webdriver
 
 id_gtech = os.environ.get('id_gtech')
@@ -11,8 +12,28 @@ url_gtech_2 = os.environ.get('url_gtech_2')
 ad_pic_s3_bucket = os.environ.get('ad_pic_s3_bucket')
 ad_pic_s3_key = os.environ.get('ad_pic_s3_key')
 
+BIN_DIR = "/tmp/bin"
+CURR_BIN_DIR = os.getcwd() + "/bin"
+
 def lambda_handler(event, context):
+    _init_bin("headless-chromium")
+    _init_bin("chromedriver")
+
     openURL()
+
+def _init_bin(executable_name):
+    start = time.clock()
+    if not os.path.exists(BIN_DIR):
+        print("Creating bin folder")
+        os.makedirs(BIN_DIR)
+    print("Copying binaries for " + executable_name + " in /tmp/bin")
+    currfile = os.path.join(CURR_BIN_DIR, executable_name)
+    newfile = os.path.join(BIN_DIR, executable_name)
+    shutil.copy2(currfile, newfile)
+    print("Giving new binaries permissions for lambda")
+    os.chmod(newfile, 0o775)
+    elapsed = time.clock() - start
+    print(executable_name + " ready in " + str(elapsed) + "s.")
 
 def openURL():
     print('start')
@@ -59,9 +80,9 @@ def openURL():
         chrome_options.add_argument('--disk-cache-dir=/tmp/cache-dir')
         chrome_options.add_argument(
             'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36')
-        chrome_options.binary_location = os.getcwd() + "/bin/headless-chromium"
-
-        driver = webdriver.Chrome(chrome_options=chrome_options)
+        # chrome_options.binary_location = os.getcwd() + "/bin/headless-chromium"
+        chrome_options.binary_location = "/tmp/bin/headless-chromium"
+        driver = webdriver.Chrome(chrome_options=chrome_options, executable_path="/tmp/bin/chromedriver")
         driver.get(url_gtech_1)
         print('open web browser')
 
