@@ -5,7 +5,6 @@ Resources:
   GTechAutoPostingLambdaRole:
       Type: AWS::IAM::Role
       Properties:
-        PermissionsBoundary: !Sub "arn:aws:iam::${AWS::AccountId}:policy/GithubActionsIamResourcePermissionsBoundary"
         RoleName: !Sub "gtech-auto-posting-app-lambda-role-${AWS::Region}"
         AssumeRolePolicyDocument:
           Version: 2012-10-17
