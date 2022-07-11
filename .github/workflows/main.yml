@@ -58,21 +58,21 @@ jobs:
           version: "1.46.0"
 
       - name: SAM Build
-        run: >
+        run: |
           sam build 
-            --build-dir ./build 
-            --base-dir ./lambda_code 
-            --template-file ./aws//template.yaml 
+            --build-dir ./build \
+            --base-dir ./lambda_code \
+            --template-file ./aws//template.yaml \
             --manifest ./aws/requirements.txt
 
       - name: SAM Lambda deploy
-        run: >
+        run: |
           sam deploy 
-            --template-file build/template.yaml 
-            --s3-bucket tint-master 
-            --s3-prefix gtech-auto-posting-app 
-            --region ${{ env.AWS_REGION }} 
-            --stack-name gtech-auto-posting-app-lambda 
-            --no-confirm-changeset 
-            --no-fail-on-empty-changeset 
+            --template-file build/template.yaml \
+            --s3-bucket tint-master \
+            --s3-prefix gtech-auto-posting-app \
+            --region ${{ env.AWS_REGION }} \
+            --stack-name gtech-auto-posting-app-lambda \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset \
             --parameter-overrides Name=gtech-auto-posting-app
