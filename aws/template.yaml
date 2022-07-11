@@ -27,7 +27,7 @@ Resources:
     Properties:
       Description: Setting up gtech-auto-posting-app Lambda
       FunctionName: !FindInMap [ Constant, Value, FuncName ]
-      Handler: !Join [ '.', !FindInMap [ Constant, Value, FuncName ], 'lambda_handler' ]
+      Handler: !Join [ '.', [ !FindInMap [ Constant, Value, FuncName ], 'lambda_handler' ] ]
       MemorySize: !FindInMap [ Constant, Value, LambdaMemorySize ]
 
 Outputs:
