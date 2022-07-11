@@ -7,10 +7,10 @@ import os
 
 id_gtech = os.environ.get('id_gtech')
 pwd_gtech = os.environ.get('pwd_gtech')
-url_gtech_1 = os.enviorn.get('url_gtech_1')
-url_gtech_2 = os.enviorn.get('url_gtech_2')
-ad_pic_s3_bucket = os.enviorn.get('ad_pic_s3_bucket')
-ad_pic_s3_key = os.enviorn.get('ad_pic_s3_key')
+url_gtech_1 = os.environ.get('url_gtech_1')
+url_gtech_2 = os.environ.get('url_gtech_2')
+ad_pic_s3_bucket = os.environ.get('ad_pic_s3_bucket')
+ad_pic_s3_key = os.environ.get('ad_pic_s3_key')
 
 def lambda_handler(event, context):
     openURL(url_gtech_1)
