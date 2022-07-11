@@ -20,6 +20,16 @@ def lambda_handler(event, context):
     openURL()
 
 def _init_bin(executable_name):
+
+    files_1 = [f for f in os.listdir(os.getcwd()) if os.path.isfile(os.path.join(os.getcwd(), f))]
+    print(files_1)
+
+    files_2 = [f for f in os.listdir(CURR_BIN_DIR) if os.path.isfile(os.path.join(CURR_BIN_DIR, f))]
+    print(files_2)
+
+    files_3 = [f for f in os.listdir('/') if os.path.isfile(os.path.join('/', f))]
+    print(files_3)
+
     start = time.clock()
     if not os.path.exists(BIN_DIR):
         print("Creating bin folder")
