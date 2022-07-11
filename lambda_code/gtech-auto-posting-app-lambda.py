@@ -9,7 +9,8 @@ id_gtech = os.environ.get('id_gtech')
 pwd_gtech = os.environ.get('pwd_gtech')
 url_gtech_1 = os.enviorn.get('url_gtech_1')
 url_gtech_2 = os.enviorn.get('url_gtech_2')
-ad_pic_s3_location = os.enviorn.get('ad_pic_s3_location')
+ad_pic_s3_bucket = os.enviorn.get('ad_pic_s3_bucket')
+ad_pic_s3_key = os.enviorn.get('ad_pic_s3_key')
 
 def lambda_handler(event, context):
     openURL(url_gtech_1)
@@ -62,7 +63,7 @@ def openURL(url_gtech_1):
 
         # photo attached
         web.click(text="bf_file[]", tag='input', id='bf_file_1')
-        web.driver.find_element_by_id("bf_file_1").send_keys(ad_pic_s3_location)
+        web.driver.find_element_by_id("bf_file_1").send_keys(ad_pic_s3_bucket)
         web.press(key=web.Key.ESCAPE)
 
         # submit
