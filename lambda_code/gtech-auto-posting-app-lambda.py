@@ -1,5 +1,3 @@
-import urllib.request
-import urllib.error
 import time
 import os
 import shutil
