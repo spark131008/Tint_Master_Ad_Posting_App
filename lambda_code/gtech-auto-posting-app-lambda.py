@@ -1,7 +1,5 @@
 import urllib.request
 import urllib.error
-import webbrowser
-from webbot import Browser
 import time
 import os
 from selenium import webdriver
