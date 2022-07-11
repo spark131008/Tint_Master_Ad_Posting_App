@@ -4,6 +4,7 @@ import webbrowser
 from webbot import Browser
 import time
 import os
+from selenium import webdriver
 
 id_gtech = os.environ.get('id_gtech')
 pwd_gtech = os.environ.get('pwd_gtech')
@@ -13,9 +14,9 @@ ad_pic_s3_bucket = os.environ.get('ad_pic_s3_bucket')
 ad_pic_s3_key = os.environ.get('ad_pic_s3_key')
 
 def lambda_handler(event, context):
-    openURL(url_gtech_1)
+    openURL()
 
-def openURL(url_gtech_1):
+def openURL():
     try:
         content = '''
 <p class="li1" style="font-size:12px;line-height:0.5;font-family:'Helvetica Neue';"><span style="font-size:26px;">
@@ -45,29 +46,59 @@ def openURL(url_gtech_1):
         a = urllib.request.urlopen(url_gtech_1)
         print(a.getcode())
 
-        web = Browser()
-        web.go_to(url_gtech_1)
-        web.type(id_gtech, into='mb_id', id='login_id')
-        web.type(pwd_gtech, into='mb_password', id='login_pw')
-        web.click(text='로그인')
-        web.click(text='광고')
-        web.go_to(url_gtech_2)
-        web.click(text="html", tag='input')
-        web.driver.switch_to.alert.accept()
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--window-size=1280x1696')
+        chrome_options.add_argument('--user-data-dir=/tmp/user-data')
+        chrome_options.add_argument('--hide-scrollbars')
+        chrome_options.add_argument('--enable-logging')
+        chrome_options.add_argument('--log-level=0')
+        chrome_options.add_argument('--v=99')
+        chrome_options.add_argument('--single-process')
+        chrome_options.add_argument('--data-path=/tmp/data-path')
+        chrome_options.add_argument('--ignore-certificate-errors')
+        chrome_options.add_argument('--homedir=/tmp')
+        chrome_options.add_argument('--disk-cache-dir=/tmp/cache-dir')
+        chrome_options.add_argument(
+            'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36')
+        chrome_options.binary_location = os.getcwd() + "/bin/headless-chromium"
+
+        driver = webdriver.Chrome(chrome_options=chrome_options)
+        driver.get(url_gtech_1)
+        driver.type(id_gtech, into='mb_id', id='login_id')
+        driver.type(pwd_gtech, into='mb_password', id='login_pw')
+
+        driver.click(text='로그인')
+        driver.click(text='광고')
+
+        driver.get(url_gtech_2)
+        driver.click(text="html", tag='input')
+
+
+        # web.go_to(url_gtech_1)
+        # web.type(id_gtech, into='mb_id', id='login_id')
+        # web.type(pwd_gtech, into='mb_password', id='login_pw')
+        # web.click(text='로그인')
+        # web.click(text='광고')
+        # web.go_to(url_gtech_2)
+        # web.click(text="html", tag='input')
+        driver.switch_to.alert.accept()
 
         # Subject typed
-        web.type('◆ 자동차 썬팅/블랙박스 전문점 틴트 마스터, 아이나비 블랙박스 특별세일!!! ◆', into='wr_subject', id='wr_subject')
+        driver.type('◆ 자동차 썬팅/블랙박스 전문점 틴트 마스터, 아이나비 블랙박스 특별세일!!! ◆', into='wr_subject', id='wr_subject')
 
         # Content typed
-        web.type(content, into='wr_content', id='wr_content')
+        driver.type(content, into='wr_content', id='wr_content')
 
         # photo attached
-        web.click(text="bf_file[]", tag='input', id='bf_file_1')
-        web.driver.find_element_by_id("bf_file_1").send_keys(ad_pic_s3_bucket)
-        web.press(key=web.Key.ESCAPE)
+        driver.click(text="bf_file[]", tag='input', id='bf_file_1')
+        driver.driver.find_element_by_id("bf_file_1").send_keys(ad_pic_s3_bucket)
+        # web.press(key=web.Key.ESCAPE)
 
         # submit
-        web.click(text="작성완료", id='btn_submit')
+        # web.click(text="작성완료", id='btn_submit')
 
     except Exception as e:
         print(e)
