@@ -15,7 +15,7 @@ Mappings:
 
 Globals:
   Function:
-    Runtime: python3.8
+    Runtime: python3.6
     Architectures:
       - x86_64
     Timeout: 300
