@@ -24,7 +24,7 @@ def _init_bin(executable_name):
     files_1 = [f for f in os.listdir(os.getcwd()) if os.path.isfile(os.path.join(os.getcwd(), f))]
     print(files_1)
 
-    files_2 = [f for f in os.listdir(CURR_BIN_DIR) if os.path.isfile(os.path.join(CURR_BIN_DIR, f))]
+    files_2 = [f for f in os.listdir('/var') if os.path.isfile(os.path.join('/var', f))]
     print(files_2)
 
     files_3 = [f for f in os.listdir('/') if os.path.isfile(os.path.join('/', f))]
