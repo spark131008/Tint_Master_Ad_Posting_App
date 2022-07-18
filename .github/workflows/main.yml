@@ -40,7 +40,7 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
         with:
           name: gtech-auto-posting-app-lambda-iam-role
-          template: aws/lambda-iam-role.yaml
+          template: aws/lambda-iam-role.yml
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_NAMED_IAM
           tags: |
