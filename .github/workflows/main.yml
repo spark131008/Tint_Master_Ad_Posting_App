@@ -42,7 +42,7 @@ jobs:
           pip install --target=lib/ botocore==1.9.18
           pip install --target=lib/ wheel
           pip install --target=lib/ selenium==3.14
-          pip install --target=lib/ serverless-chrome==1.0.0-55
+#          pip install --target=lib/ serverless-chrome==1.0.0-55
           pip install --target=lib/ chromedriver==2.43
           ls /home/runner/work/Tint_Master_Ad_Posting_App/Tint_Master_Ad_Posting_App/lambda_code/
           cp /home/runner/work/Tint_Master_Ad_Posting_App/Tint_Master_Ad_Posting_App/lambda_code/* ./lib/
