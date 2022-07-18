@@ -23,7 +23,7 @@ Resources:
       Role: !ImportValue gtech-auto-posting-app-lambda-iam-role-ARN
       Code:
         S3Bucket: tint-master
-        S3Key: test.zip
+        S3Key: gtech-auto-posting-app/test.zip
       Runtime: python3.6
       Timeout: 300
       MemorySize: !FindInMap [ Constant, Value, LambdaMemorySize ]
