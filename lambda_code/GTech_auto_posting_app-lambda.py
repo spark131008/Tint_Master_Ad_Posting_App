@@ -30,7 +30,7 @@ def _init_bin(executable_name):
         print("Creating bin folder")
         os.makedirs(BIN_DIR)
     print("Copying binaries for " + executable_name + " in /tmp/bin")
-    currfile = os.path.join(CURR_BIN_DIR, executable_name)
+    currfile = os.path.join(os.getcwd(), executable_name)
     newfile = os.path.join(BIN_DIR, executable_name)
     shutil.copy2(currfile, newfile)
     print("Giving new binaries permissions for lambda")
