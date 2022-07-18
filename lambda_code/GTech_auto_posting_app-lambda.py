@@ -88,21 +88,21 @@ def openURL():
         driver.get(url_gtech_1)
         print('open web browser')
 
-        element_id = driver.find_element(text='mb_id', id='login_id')
+        element_id = driver.find_element_by_id(id_='login_id')
         element_id.send_keys(id_gtech)
-        element_pwd = driver.find_element(text='mb_password', id='login_pw')
+        element_pwd = driver.find_element_by_id(id_='login_pw')
         element_pwd.send_keys(pwd_gtech)
         print('entered id/pwd')
 
-        element_click1 = driver.find_element(text='로그인')
+        element_click1 = driver.find_element_by_id(id_='로그인')
         element_click1.click()
-        element_click2 = driver.find_element(text='광고')
+        element_click2 = driver.find_element_by_id(id_='광고')
         element_click2.click()
         print('clicked login/ad')
 
         driver.get(url_gtech_2)
         print('entering the advertising page')
-        element_click3 = driver.find_element(text="html", tag='input')
+        element_click3 = driver.find_element_by_id(id_="html")
         element_click3.click()
         print('clicked html')
 
