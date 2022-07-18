@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Lambda Function
+
+Parameters:
+  Name:
+    Type: String
+    Default: lambda
+    Description: Project name
+
+Mappings:
+  Constant:
+    Value:
+      FuncName: gtech-auto-posting-app-lambda
+      LambdaMemorySize: 1024
+
+Resources:
+  GTechADPostingLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Architectures:
+        - x86_64
+      Handler: !Join [ '.', [ !FindInMap [ Constant, Value, FuncName ], 'lambda_handler' ] ]
+      Role: !ImportValue gtech-auto-posting-app-lambda-iam-role-ARN
+      Code:
+        S3Bucket: tint-master
+        S3Key: test-code/test.zip
+      Runtime: python3.6
+      Timeout: 300
+      MemorySize: !FindInMap [ Constant, Value, LambdaMemorySize ]
+
+Outputs:
+  GTechADPostingLambdaARN:
+    Description: gtech-auto-posting-app Lambda ARN
+    Value: !GetAtt  GTechADPostingLambda.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-ARN"
+  GTechADPostingLambdaName:
+    Description: gtech-auto-posting-app Lambda Name
+    Value: !Ref GTechADPostingLambda
+    Export:
+      Name: !Sub "${AWS::StackName}-Name"
