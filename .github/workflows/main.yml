@@ -45,8 +45,9 @@ jobs:
           pip install --target=lib/ chromedriver==2.24.1
           ls /home/runner/work/Tint_Master_Ad_Posting_App/Tint_Master_Ad_Posting_App/lambda_code/
           cp /home/runner/work/Tint_Master_Ad_Posting_App/Tint_Master_Ad_Posting_App/lambda_code/* ./lib/
-          zip -r test.zip lib/
-          ls ./
+          cd ./lib
+          zip -r test.zip .
+          cd ..
 
       - uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -56,7 +57,7 @@ jobs:
 
       - name: upload lambda libraries and source code to s3
         run: |
-          aws s3 cp ./test.zip s3://tint-master/gtech-auto-posting-app/test.zip
+          aws s3 cp ./lib/test.zip s3://tint-master/gtech-auto-posting-app/test.zip
 
       - name: Create IAM Role for GTECH AUTO POSTING Lambda
         uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
