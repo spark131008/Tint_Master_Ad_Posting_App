@@ -41,9 +41,15 @@ jobs:
           pip install --target=lib/ boto3==1.6.18
           pip install --target=lib/ botocore==1.9.18
           pip install --target=lib/ wheel
-          pip install --target=lib/ selenium==3.14
-          pip install --target=lib/ Chromedriver==86.0.4240.22.0
-          pip install --target=lib/ Chromium==86.0.4240.0
+          pip install --target=lib/ selenium==2.37
+          
+          url -SL https://chromedriver.storage.googleapis.com/2.37/chromedriver_linux64.zip > lib/chromedriver.zip
+          unzip chromedriver.zip
+          rm chromedriver.zip
+          
+          curl -SL https://github.com/adieuadieu/serverless-chrome/releases/download/v1.0.0-41/stable-headless-chromium-amazonlinux-2017-03.zip > lib/headless-chromium.zip
+          unzip headless-chromium.zip
+          rm headless-chromium.zip
           ls /home/runner/work/Tint_Master_Ad_Posting_App/Tint_Master_Ad_Posting_App/lambda_code/
           cp /home/runner/work/Tint_Master_Ad_Posting_App/Tint_Master_Ad_Posting_App/lambda_code/* ./lib/
           cd ./lib
