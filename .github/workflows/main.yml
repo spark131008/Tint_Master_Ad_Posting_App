@@ -44,12 +44,12 @@ jobs:
           pip install --target=lib/ selenium==2.37
           
           curl -SL https://chromedriver.storage.googleapis.com/2.37/chromedriver_linux64.zip > lib/chromedriver.zip
-          unzip chromedriver.zip
-          rm chromedriver.zip
+          unzip lib/chromedriver.zip
+          rm lib/chromedriver.zip
           
           curl -SL https://github.com/adieuadieu/serverless-chrome/releases/download/v1.0.0-41/stable-headless-chromium-amazonlinux-2017-03.zip > lib/headless-chromium.zip
-          unzip headless-chromium.zip
-          rm headless-chromium.zip
+          unzip lib/headless-chromium.zip
+          rm lib/headless-chromium.zip
           
           ls /home/runner/work/Tint_Master_Ad_Posting_App/Tint_Master_Ad_Posting_App/lambda_code/
           cp /home/runner/work/Tint_Master_Ad_Posting_App/Tint_Master_Ad_Posting_App/lambda_code/* ./lib/
