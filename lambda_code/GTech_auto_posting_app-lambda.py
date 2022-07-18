@@ -83,32 +83,31 @@ def openURL():
         chrome_options.add_argument('--disk-cache-dir=/tmp/cache-dir')
         chrome_options.add_argument(
             'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36')
-        # chrome_options.binary_location = os.getcwd() + "/bin/headless-chromium"
         chrome_options.binary_location = "/tmp/bin/headless-chromium"
-        # driver = webdriver.Chrome(chrome_options=chrome_options)
         driver = webdriver.Chrome(chrome_options=chrome_options, executable_path="/tmp/bin/chromedriver")
         driver.get(url_gtech_1)
         print('open web browser')
 
-        driver.type(id_gtech, into='mb_id', id='login_id')
-        driver.type(pwd_gtech, into='mb_password', id='login_pw')
+        element_id = driver.find_element(text='mb_id', id='login_id')
+        element_id.send_keys(id_gtech)
+        element_pwd = driver.find_element(text='mb_password', id='login_pw')
+        element_pwd.send_keys(pwd_gtech)
         print('entered id/pwd')
 
-        driver.click(text='로그인')
-        driver.click(text='광고')
+        element_click1 = driver.find_element(text='로그인')
+        element_click1.click()
+        element_click2 = driver.find_element(text='광고')
+        element_click2.click()
+        print('clicked login/ad')
 
         driver.get(url_gtech_2)
-        driver.click(text="html", tag='input')
+        print('entering the advertising page')
+        element_click3 = driver.find_element(text="html", tag='input')
+        element_click3.click()
+        print('clicked html')
 
-
-        # web.go_to(url_gtech_1)
-        # web.type(id_gtech, into='mb_id', id='login_id')
-        # web.type(pwd_gtech, into='mb_password', id='login_pw')
-        # web.click(text='로그인')
-        # web.click(text='광고')
-        # web.go_to(url_gtech_2)
-        # web.click(text="html", tag='input')
         driver.switch_to.alert.accept()
+        print('alert accepted')
 
         # Subject typed
         driver.type('◆ 자동차 썬팅/블랙박스 전문점 틴트 마스터, 아이나비 블랙박스 특별세일!!! ◆', into='wr_subject', id='wr_subject')
