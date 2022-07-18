@@ -10,7 +10,7 @@ Parameters:
 Mappings:
   Constant:
     Value:
-      FuncName: gtech-auto-posting-app-lambda
+      FuncName: GTech_auto_posting_app-lambda
       LambdaMemorySize: 1024
 
 Resources:
@@ -20,6 +20,7 @@ Resources:
       Architectures:
         - x86_64
       Handler: !Join [ '.', [ !FindInMap [ Constant, Value, FuncName ], 'lambda_handler' ] ]
+      FunctionName: !FindInMap [ Constant, Value, FuncName ]
       Role: !ImportValue gtech-auto-posting-app-lambda-iam-role-ARN
       Code:
         S3Bucket: tint-master
