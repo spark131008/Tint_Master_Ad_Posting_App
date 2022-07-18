@@ -1,6 +1,4 @@
 boto3
 botocore
 selenium==3.8.0
-severless-chrome==1.0.0-55
-chromedriver==2.43
-serverless-chrome==1.0.0-55
+chromedriver==103.0.5060.53
