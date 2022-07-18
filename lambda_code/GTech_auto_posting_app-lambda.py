@@ -21,27 +21,22 @@ def lambda_handler(event, context):
 
 def _init_bin(executable_name):
 
+    print(os.getcwd())
     files_1 = [f for f in os.listdir(os.getcwd()) if os.path.isfile(os.path.join(os.getcwd(), f))]
     print(files_1)
-
-    files_2 = [f for f in os.listdir('/var') if os.path.isfile(os.path.join('/var', f))]
-    print(files_2)
-
-    files_3 = [f for f in os.listdir('/') if os.path.isfile(os.path.join('/', f))]
-    print(files_3)
 
     start = time.clock()
     if not os.path.exists(BIN_DIR):
         print("Creating bin folder")
         os.makedirs(BIN_DIR)
-    # print("Copying binaries for " + executable_name + " in /tmp/bin")
-    # currfile = os.path.join(CURR_BIN_DIR, executable_name)
-    # newfile = os.path.join(BIN_DIR, executable_name)
-    # shutil.copy2(currfile, newfile)
-    # print("Giving new binaries permissions for lambda")
-    # os.chmod(newfile, 0o775)
-    # elapsed = time.clock() - start
-    # print(executable_name + " ready in " + str(elapsed) + "s.")
+    print("Copying binaries for " + executable_name + " in /tmp/bin")
+    currfile = os.path.join(CURR_BIN_DIR, executable_name)
+    newfile = os.path.join(BIN_DIR, executable_name)
+    shutil.copy2(currfile, newfile)
+    print("Giving new binaries permissions for lambda")
+    os.chmod(newfile, 0o775)
+    elapsed = time.clock() - start
+    print(executable_name + " ready in " + str(elapsed) + "s.")
 
 def openURL():
     print('start')
@@ -90,8 +85,8 @@ def openURL():
             'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36')
         # chrome_options.binary_location = os.getcwd() + "/bin/headless-chromium"
         chrome_options.binary_location = "/tmp/bin/headless-chromium"
-        driver = webdriver.Chrome(chrome_options=chrome_options)
-        # driver = webdriver.Chrome(chrome_options=chrome_options, executable_path="/tmp/bin/chromedriver")
+        # driver = webdriver.Chrome(chrome_options=chrome_options)
+        driver = webdriver.Chrome(chrome_options=chrome_options, executable_path="/tmp/bin/chromedriver")
         driver.get(url_gtech_1)
         print('open web browser')
 
