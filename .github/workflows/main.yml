@@ -78,7 +78,7 @@ jobs:
       - name: Create GTECH AUTO POSTING Lambda
         uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
         with:
-          name: gtech-auto-posting-app-lambda-func_1
+          name: gtech-auto-posting-app-lambda-function
           template: aws/lambda-deploy.yml
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_NAMED_IAM
