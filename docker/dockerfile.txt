@@ -1,0 +1,15 @@
+FROM ubuntu:18.04
+RUN apt update
+RUN apt install software-properties-common -y
+RUN add-apt-repository ppa:deadsnakes/ppa
+RUN ln -s /usr/bin/pip3 /usr/bin/pip
+RUN ln -s /usr/bin/python3.8 /usr/bin/python
+RUN apt install python3.8 -y
+RUN apt install pip
+
+RUN pip install auto-sklearn
+RUN pip install pandas
+
+ADD test.py /
+
+CMD [ "python", "./test.py" ]

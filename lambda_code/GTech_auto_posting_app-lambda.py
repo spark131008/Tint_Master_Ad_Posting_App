@@ -2,6 +2,7 @@ import time
 import os
 import shutil
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 id_gtech = os.environ.get('id_gtech')
 pwd_gtech = os.environ.get('pwd_gtech')
@@ -14,9 +15,7 @@ BIN_DIR = "/tmp/bin"
 CURR_BIN_DIR = os.getcwd() + "/bin"
 
 def lambda_handler(event, context):
-    _init_bin("headless-chromium")
     _init_bin("chromedriver")
-
     openURL()
 
 def _init_bin(executable_name):
@@ -66,25 +65,10 @@ def openURL():
 <p class="p1" style="font-size:12px;line-height:0.9;font-family:'Helvetica Neue';"><span style="font-size:48px;">678-731-7177</span></p>
         '''
 
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument('--headless')
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument('--disable-gpu')
-        chrome_options.add_argument('--window-size={}x{}'.format(1280, 1024))
-        chrome_options.add_argument('--user-data-dir=/tmp/user-data')
-        chrome_options.add_argument('--hide-scrollbars')
-        chrome_options.add_argument('--enable-logging')
-        chrome_options.add_argument('--log-level=0')
-        chrome_options.add_argument('--v=99')
-        chrome_options.add_argument('--single-process')
-        chrome_options.add_argument('--data-path=/tmp/data-path')
-        chrome_options.add_argument('--ignore-certificate-errors')
-        chrome_options.add_argument('--homedir=/tmp')
-        chrome_options.add_argument('--disk-cache-dir=/tmp/cache-dir')
-        chrome_options.add_argument(
-            'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36')
-        chrome_options.binary_location = "/tmp/bin/headless-chromium"
-        driver = webdriver.Chrome(chrome_options=chrome_options, executable_path="/tmp/bin/chromedriver")
+        options = Options()
+        options.headless = True
+        driver = webdriver.Chrome(options=options, executable_path="/tmp/bin/chromedriver")
+
         driver.get(url_gtech_1)
         print('open web browser')
 
@@ -94,37 +78,41 @@ def openURL():
         element_pwd.send_keys(pwd_gtech)
         print('entered id/pwd')
 
-        element_click1 = driver.find_element_by_id(id_='로그인')
+        element_click1 = driver.find_element_by_class_name(name='btn_submit')
         element_click1.click()
-        element_click2 = driver.find_element_by_id(id_='광고')
-        element_click2.click()
-        print('clicked login/ad')
+        print('login completed')
 
         driver.get(url_gtech_2)
         print('entering the advertising page')
-        element_click3 = driver.find_element_by_id(id_="html")
-        element_click3.click()
+        element_click2 = driver.find_element_by_class_name(name="chk_box")
+        element_click2.click()
         print('clicked html')
 
         driver.switch_to.alert.accept()
         print('alert accepted')
 
         # Subject typed
-        driver.type('◆ 자동차 썬팅/블랙박스 전문점 틴트 마스터, 아이나비 블랙박스 특별세일!!! ◆', into='wr_subject', id='wr_subject')
+        element_subject = driver.find_element_by_id(id_='wr_subject')
+        element_subject.send_keys('◆ 자동차 썬팅/블랙박스 전문점 틴트 마스터, 아이나비 블랙박스 특별세일!!! ◆')
+        print('subject typed')
 
         # Content typed
-        driver.type(content, into='wr_content', id='wr_content')
+        element_subject = driver.find_element_by_id(id_='wr_content')
+        element_subject.send_keys(content)
+        print('content typed')
 
         # photo attached
-        driver.click(text="bf_file[]", tag='input', id='bf_file_1')
-        driver.driver.find_element_by_id("bf_file_1").send_keys(ad_pic_s3_bucket)
-        # web.press(key=web.Key.ESCAPE)
+        # element_attachment = driver.find_element_by_id(id_="bf_file_1")
+        # element_attachment.send_keys('/Users/spark/Documents/TintMaster/NewspaperAD/tint_box_AD_004.jpeg')
+        print("Photo attached")
 
         # submit
-        # web.click(text="작성완료", id='btn_submit')
+        element_submit_btn = driver.find_element_by_id(id_='btn_submit')
+        element_submit_btn.click()
+        print('AD post uploaded')
 
     except Exception as e:
         print(e)
 
     finally:
-        time.sleep(5)
+        time.sleep(2)
