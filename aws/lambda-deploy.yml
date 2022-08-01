@@ -10,7 +10,7 @@ Parameters:
 Mappings:
   Constant:
     Value:
-      FuncName: GTech_auto_posting_app-lambda_function
+      FuncName: GTech-auto-ad-posting_app-lambda
       LambdaMemorySize: 1024
 
 Resources:
