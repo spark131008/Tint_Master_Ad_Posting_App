@@ -33,7 +33,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: "3.8.9"
+          python-version: "3.9.13"
 
       - name: Install dependencies
         run: |
@@ -41,12 +41,15 @@ jobs:
           pip install --target=lib/ boto3
           pip install --target=lib/ botocore
           pip install --target=lib/ wheel
-          pip install --target=lib/ selenium==3.141.0
+          pip install --target=lib/ selenium==4.3.0
           
-          curl -SL https://chromedriver.storage.googleapis.com/103.0.5060.53/chromedriver_linux64.zip > lib/chromedriver.zip
+          curl -SL https://chromedriver.storage.googleapis.com/103.0.5060.134/chromedriver_linux64.zip > lib/chromedriver.zip
+          curl -SL https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F1002910%2Fchrome-linux.zip?alt=media > lib/chrome-linux.zip
           cd ./lib
           unzip chromedriver.zip
+          unzip chrome-linux.zip
           rm chromedriver.zip
+          rm chrome-linux.zip
           cd ..
           
           ls /home/runner/work/Tint_Master_Ad_Posting_App/Tint_Master_Ad_Posting_App/lambda_code/

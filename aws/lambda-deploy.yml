@@ -25,7 +25,7 @@ Resources:
       Code:
         S3Bucket: tint-master
         S3Key: gtech-auto-posting-app/test.zip
-      Runtime: python3.8
+      Runtime: python3.9
       Timeout: 300
       MemorySize: !FindInMap [ Constant, Value, LambdaMemorySize ]
 
