@@ -67,7 +67,7 @@ def openURL():
 
         options = Options()
         options.headless = True
-        driver = webdriver.Chrome(options=options, executable_path="/tmp/bin/chromedriver")
+        driver = webdriver.Chrome(options=options, executable_path="./chromedriver")
 
         driver.get(url_gtech_1)
         print('open web browser')
