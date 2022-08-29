@@ -10,7 +10,7 @@ Parameters:
 Mappings:
   Constant:
     Value:
-      FuncName: GTech-auto-ad-posting_app-lambda
+      FuncName: gtech-ad-posting-app-lambda
       LambdaMemorySize: 2048
 
 Resources:
@@ -21,22 +21,21 @@ Resources:
         - x86_64
       Handler: !Join [ '.', [ !FindInMap [ Constant, Value, FuncName ], 'lambda_handler' ] ]
       FunctionName: !FindInMap [ Constant, Value, FuncName ]
-      Role: !ImportValue gtech-auto-posting-app-lambda-iam-role-ARN
-      Code:
-        S3Bucket: tint-master
-        S3Key: gtech-auto-posting-app/test.zip
+      Role: !ImportValue gtech-ad-posting-app-lambda-iam-role-ARN
+      PackageType: Image
+      Code: ImageUri=532888352687.dkr.ecr.us-east-1.amazonaws.com/gtech_posting_lambda:latest
       Runtime: python3.9
       Timeout: 300
       MemorySize: !FindInMap [ Constant, Value, LambdaMemorySize ]
 
 Outputs:
   GTechADPostingLambdaARN:
-    Description: gtech-auto-posting-app Lambda ARN
+    Description: gtech-ad-posting-app Lambda ARN
     Value: !GetAtt  GTechADPostingLambda.Arn
     Export:
       Name: !Sub "${AWS::StackName}-ARN"
   GTechADPostingLambdaName:
-    Description: gtech-auto-posting-app Lambda Name
+    Description: gtech-ad-posting-app Lambda Name
     Value: !Ref GTechADPostingLambda
     Export:
       Name: !Sub "${AWS::StackName}-Name"

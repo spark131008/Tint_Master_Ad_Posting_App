@@ -84,25 +84,25 @@ jobs:
 #        run: |
 #          aws s3 cp ./lib/test.zip s3://tint-master/gtech-auto-posting-app/test.zip
 
-#      - name: Create IAM Role for GTECH AUTO POSTING Lambda
-#        uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
-#        with:
-#          name: gtech-auto-posting-app-lambda-iam-role
-#          template: aws/lambda-iam-role.yml
-#          no-fail-on-empty-changeset: "1"
-#          capabilities: CAPABILITY_NAMED_IAM
-#          tags: |
-#            SystemTag: ${{ env.SYSTEM_TAG }}
-#
-#      - name: Create GTECH AUTO POSTING Lambda
-#        uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
-#        with:
-#          name: gtech-auto-ad-posting-app-lambda-func
-#          template: aws/lambda-deploy.yml
-#          no-fail-on-empty-changeset: "1"
-#          capabilities: CAPABILITY_NAMED_IAM
-#          tags: |
-#            SystemTag: ${{ env.SYSTEM_TAG }}
+      - name: Create IAM Role for GTECH AUTO POSTING Lambda
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
+        with:
+          name: gtech-ad-posting-app-lambda-iam-role
+          template: aws/lambda-iam-role.yml
+          no-fail-on-empty-changeset: "1"
+          capabilities: CAPABILITY_NAMED_IAM
+          tags: |
+            SystemTag: ${{ env.SYSTEM_TAG }}
+
+      - name: Create GTECH AUTO POSTING Lambda
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
+        with:
+          name: gtech-ad-posting-app-lambda-func
+          template: aws/lambda-deploy.yml
+          no-fail-on-empty-changeset: "1"
+          capabilities: CAPABILITY_NAMED_IAM
+          tags: |
+            SystemTag: ${{ env.SYSTEM_TAG }}
 
 
 #      - uses: aws-actions/setup-sam@v2
