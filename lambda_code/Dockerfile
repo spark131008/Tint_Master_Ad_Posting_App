@@ -13,5 +13,5 @@ RUN yum install atk cups-libs gtk3 libXcomposite alsa-lib \
 RUN pip install selenium
 COPY --from=build /opt/chrome-linux /opt/chrome
 COPY --from=build /opt/chromedriver /opt/
-COPY gtech-auto-posting-app-lambda-SAM.py ./
-CMD [ "GTech-auto-ad-posting_app-lambda.lambda_handler" ]
+COPY gtech-auto-posting-app-lambda.py ./
+CMD [ "gtech-auto-posting-app-lambda.lambda_handler" ]
