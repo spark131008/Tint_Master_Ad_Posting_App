@@ -25,7 +25,7 @@ Resources:
       PackageType: Image
       Code:
         ImageUri: 532888352687.dkr.ecr.us-east-1.amazonaws.com/gtech_posting_lambda:latest
-      Runtime: python3.9
+#      Runtime: python3.9
       Timeout: 300
       MemorySize: !FindInMap [ Constant, Value, LambdaMemorySize ]
 
