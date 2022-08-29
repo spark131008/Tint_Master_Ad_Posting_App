@@ -35,28 +35,28 @@ jobs:
         with:
           python-version: "3.9.13"
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install --target=lib/ boto3
-          pip install --target=lib/ botocore
-          pip install --target=lib/ wheel
-          pip install --target=lib/ selenium==4.3.0
-          
-          curl -SL https://chromedriver.storage.googleapis.com/103.0.5060.134/chromedriver_linux64.zip > lib/chromedriver.zip
-          curl -SL https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F1002910%2Fchrome-linux.zip?alt=media > lib/chrome-linux.zip
-          cd ./lib
-          unzip chromedriver.zip
-          unzip chrome-linux.zip
-          rm chromedriver.zip
-          rm chrome-linux.zip
-          cd ..
-          
-          ls /home/runner/work/Tint_Master_Ad_Posting_App/Tint_Master_Ad_Posting_App/lambda_code/
-          cp /home/runner/work/Tint_Master_Ad_Posting_App/Tint_Master_Ad_Posting_App/lambda_code/* ./lib/
-          cd ./lib
-          zip -r test.zip .
-          cd ..
+#      - name: Install dependencies
+#        run: |
+#          python -m pip install --upgrade pip
+#          pip install --target=lib/ boto3
+#          pip install --target=lib/ botocore
+#          pip install --target=lib/ wheel
+#          pip install --target=lib/ selenium==4.3.0
+#
+#          curl -SL https://chromedriver.storage.googleapis.com/103.0.5060.134/chromedriver_linux64.zip > lib/chromedriver.zip
+#          curl -SL https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F1002910%2Fchrome-linux.zip?alt=media > lib/chrome-linux.zip
+#          cd ./lib
+#          unzip chromedriver.zip
+#          unzip chrome-linux.zip
+#          rm chromedriver.zip
+#          rm chrome-linux.zip
+#          cd ..
+#
+#          ls /home/runner/work/Tint_Master_Ad_Posting_App/Tint_Master_Ad_Posting_App/lambda_code/
+#          cp /home/runner/work/Tint_Master_Ad_Posting_App/Tint_Master_Ad_Posting_App/lambda_code/* ./lib/
+#          cd ./lib
+#          zip -r test.zip .
+#          cd ..
 
       - uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -64,54 +64,52 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: upload lambda libraries and source code to s3
+#      - name: upload lambda libraries and source code to s3
+#        run: |
+#          aws s3 cp ./lib/test.zip s3://tint-master/gtech-auto-posting-app/test.zip
+
+#      - name: Create IAM Role for GTECH AUTO POSTING Lambda
+#        uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
+#        with:
+#          name: gtech-auto-posting-app-lambda-iam-role
+#          template: aws/lambda-iam-role.yml
+#          no-fail-on-empty-changeset: "1"
+#          capabilities: CAPABILITY_NAMED_IAM
+#          tags: |
+#            SystemTag: ${{ env.SYSTEM_TAG }}
+#
+#      - name: Create GTECH AUTO POSTING Lambda
+#        uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
+#        with:
+#          name: gtech-auto-ad-posting-app-lambda-func
+#          template: aws/lambda-deploy.yml
+#          no-fail-on-empty-changeset: "1"
+#          capabilities: CAPABILITY_NAMED_IAM
+#          tags: |
+#            SystemTag: ${{ env.SYSTEM_TAG }}
+
+
+      - uses: aws-actions/setup-sam@v2
+        with:
+          version: "1.41.0"
+
+      - name: SAM Build
         run: |
-          aws s3 cp ./lib/test.zip s3://tint-master/gtech-auto-posting-app/test.zip
+          sam build \
+            --build-dir ./build \
+            --base-dir ./lambda_code \
+            --template-file ./aws//template.yaml \
+            --manifest ./aws/requirements.txt
 
-      - name: Create IAM Role for GTECH AUTO POSTING Lambda
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
-        with:
-          name: gtech-auto-posting-app-lambda-iam-role
-          template: aws/lambda-iam-role.yml
-          no-fail-on-empty-changeset: "1"
-          capabilities: CAPABILITY_NAMED_IAM
-          tags: |
-            SystemTag: ${{ env.SYSTEM_TAG }}
 
-      - name: Create GTECH AUTO POSTING Lambda
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
-        with:
-          name: gtech-auto-ad-posting-app-lambda-func
-          template: aws/lambda-deploy.yml
-          no-fail-on-empty-changeset: "1"
-          capabilities: CAPABILITY_NAMED_IAM
-          tags: |
-            SystemTag: ${{ env.SYSTEM_TAG }}
-
-#      - uses: actions/setup-python@v3
-#        with:
-#          python-version: "3.6"
-#
-#      - uses: aws-actions/setup-sam@v2
-#        with:
-#          version: "1.41.0"
-#
-#      - name: SAM Build
-#        run: |
-#          sam build \
-#            --build-dir ./build \
-#            --base-dir ./lambda_code \
-#            --template-file ./aws//template.yaml \
-#            --manifest ./aws/requirements.txt
-#
-#      - name: SAM Lambda deploy
-#        run: |
-#          sam deploy \
-#            --template-file build/template.yaml \
-#            --s3-bucket tint-master \
-#            --s3-prefix gtech-auto-posting-app \
-#            --region ${{ env.AWS_REGION }} \
-#            --stack-name gtech-auto-posting-app-lambda \
-#            --no-confirm-changeset \
-#            --no-fail-on-empty-changeset \
-#            --parameter-overrides Name=gtech-auto-posting-app
+      - name: SAM Lambda deploy
+        run: |
+          sam deploy \
+            --template-file build/template.yaml \
+            --s3-bucket tint-master \
+            --s3-prefix gtech-auto-posting-app \
+            --region ${{ env.AWS_REGION }} \
+            --stack-name gtech-auto-posting-app-lambda \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset \
+            --parameter-overrides Name=gtech-auto-posting-app

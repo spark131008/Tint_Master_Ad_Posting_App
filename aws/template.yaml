@@ -10,12 +10,12 @@ Parameters:
 Mappings:
   Constant:
     Value:
-      FuncName: gtech-auto-posting-app-lambda
+      FuncName: gtech-auto-posting-app-lambda-SAM
       LambdaMemorySize: 1024
 
 Globals:
   Function:
-    Runtime: python3.6
+    Runtime: python3.9
     Architectures:
       - x86_64
     Timeout: 300
@@ -24,23 +24,28 @@ Globals:
 Resources:
   GTechAutoPostingLambda:
     Type: AWS::Serverless::Function
+#    Properties:
+#      Description: Setting up gtech-auto-posting-app Lambda
+#      FunctionName: !FindInMap [ Constant, Value, FuncName ]
+#      Handler: !Join [ '.', [ !FindInMap [ Constant, Value, FuncName ], 'lambda_handler' ] ]
+#      Role: !ImportValue gtech-auto-posting-app-lambda-iam-role-ARN
+#      MemorySize: !FindInMap [ Constant, Value, LambdaMemorySize ]
+
     Properties:
-      Description: Setting up gtech-auto-posting-app Lambda
-      FunctionName: !FindInMap [ Constant, Value, FuncName ]
-      Handler: !Join [ '.', [ !FindInMap [ Constant, Value, FuncName ], 'lambda_handler' ] ]
-      Role: !ImportValue gtech-auto-posting-app-lambda-iam-role-ARN
-      MemorySize: !FindInMap [ Constant, Value, LambdaMemorySize ]
-      Layers:
-        - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:chromedriver:1
+      PackageType: Image
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ./lmabda_code
+      DockerTag: GTlambda:latest
 
 Outputs:
   GTechAutoPostingLambdaARN:
     Description: gtech-auto-posting-app Lambda ARN
     Value: !GetAtt  GTechAutoPostingLambda.Arn
     Export:
-      Name: !Sub "${AWS::StackName}-ARN"
+      Name: !Sub "${AWS::StackName}-SAM-ARN"
   GTechAutoPostingLambdaName:
     Description: gtech-auto-posting-app Lambda Name
     Value: !Ref GTechAutoPostingLambda
     Export:
-      Name: !Sub "${AWS::StackName}-Name"
+      Name: !Sub "${AWS::StackName}-SAM-Name"
