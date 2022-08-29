@@ -98,8 +98,12 @@ jobs:
           sam build \
             --build-dir ./build \
             --base-dir ./lambda_code \
-            --template-file ./aws//template.yaml \
+            --template-file ./aws/template.yaml \
             --manifest ./aws/requirements.txt
+
+#      - name: SAM Build
+#        run: |
+#          sam build --use-container
 
 
       - name: SAM Lambda deploy
