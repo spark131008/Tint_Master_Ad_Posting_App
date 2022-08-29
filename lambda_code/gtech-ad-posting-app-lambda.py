@@ -6,8 +6,8 @@ from tempfile import mkdtemp
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
-id_gtech = os.environ.get('id_gtech')
-pwd_gtech = os.environ.get('pwd_gtech')
+login_id = os.environ.get('login_id')
+login_pw = os.environ.get('login_pw')
 url_gtech_1 = os.environ.get('url_gtech_1')
 url_gtech_2 = os.environ.get('url_gtech_2')
 ad_pic_s3_bucket = os.environ.get('ad_pic_s3_bucket')
@@ -90,9 +90,9 @@ def openURL():
         print('opened web browser')
 
         element_id = driver.find_element(by=By.ID, value="login_id")
-        element_id.send_keys(id_gtech)
+        element_id.send_keys(login_id)
         element_pwd = driver.find_element(by=By.ID, value="login_pw")
-        element_pwd.send_keys(pwd_gtech)
+        element_pwd.send_keys(login_pw)
         print('entered id/pwd')
 
         element_click1 = driver.find_element(by=By.CLASS_NAME, value='btn_submit')
