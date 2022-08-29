@@ -19,12 +19,12 @@ Resources:
     Properties:
       Architectures:
         - x86_64
-      Handler: !Join [ '.', [ !FindInMap [ Constant, Value, FuncName ], 'lambda_handler' ] ]
       FunctionName: !FindInMap [ Constant, Value, FuncName ]
       Role: !ImportValue gtech-ad-posting-app-lambda-iam-role-ARN
       PackageType: Image
       Code:
         ImageUri: 532888352687.dkr.ecr.us-east-1.amazonaws.com/gtech_posting_lambda:latest
+#      Handler: !Join [ '.', [ !FindInMap [ Constant, Value, FuncName ], 'lambda_handler' ] ]
 #      Runtime: python3.9
       Timeout: 300
       MemorySize: !FindInMap [ Constant, Value, LambdaMemorySize ]
