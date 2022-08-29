@@ -3,7 +3,7 @@ import os
 import shutil
 from selenium import webdriver
 from tempfile import mkdtemp
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 
 id_gtech = os.environ.get('id_gtech')
 pwd_gtech = os.environ.get('pwd_gtech')
@@ -86,19 +86,19 @@ def openURL():
         driver.get(url_gtech_1)
         print('open web browser')
 
-        element_id = driver.find_element_by_id(id_='login_id')
+        element_id = driver.find_element(by=By.ID, value="login_id")
         element_id.send_keys(id_gtech)
-        element_pwd = driver.find_element_by_id(id_='login_pw')
+        element_pwd = driver.find_element(by=By.ID, value="login_pw")
         element_pwd.send_keys(pwd_gtech)
         print('entered id/pwd')
 
-        element_click1 = driver.find_element_by_class_name(name='btn_submit')
+        element_click1 = driver.find_element(by=By.CLASS_NAME, value='btn_submit')
         element_click1.click()
         print('login completed')
 
         driver.get(url_gtech_2)
         print('entering the advertising page')
-        element_click2 = driver.find_element_by_class_name(name="chk_box")
+        element_click2 = driver.find_element(by=By.CLASS_NAME, value="chk_box")
         element_click2.click()
         print('clicked html')
 
@@ -106,22 +106,22 @@ def openURL():
         print('alert accepted')
 
         # Subject typed
-        element_subject = driver.find_element_by_id(id_='wr_subject')
+        element_subject = driver.find_element(by=By.ID, value='wr_subject')
         element_subject.send_keys('◆ 자동차 썬팅/블랙박스 전문점 틴트 마스터, 아이나비 블랙박스 특별세일!!! ◆')
         print('subject typed')
 
         # Content typed
-        element_subject = driver.find_element_by_id(id_='wr_content')
+        element_subject = driver.find_element(by=By.ID, value='wr_content')
         element_subject.send_keys(content)
         print('content typed')
 
         # photo attached
-        # element_attachment = driver.find_element_by_id(id_="bf_file_1")
+        # element_attachment = driver.find_element(by=By.ID, value="bf_file_1")
         # element_attachment.send_keys('/Users/spark/Documents/TintMaster/NewspaperAD/tint_box_AD_004.jpeg')
         print("Photo attached")
 
         # submit
-        element_submit_btn = driver.find_element_by_id(id_='btn_submit')
+        element_submit_btn = driver.find_element(by=By.ID, value='btn_submit')
         element_submit_btn.click()
         print('AD post uploaded')
 
