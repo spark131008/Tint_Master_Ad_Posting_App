@@ -28,12 +28,34 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - name: Check out code
+        uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          python-version: "3.9.13"
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: GTlambda
+          IMAGE_TAG: latest
+        run: |
+          cd lambda_code
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+#      - name: Set up Python
+#        uses: actions/setup-python@v3
+#        with:
+#          python-version: "3.9.13"
 
 #      - name: Install dependencies
 #        run: |
@@ -57,12 +79,6 @@ jobs:
 #          cd ./lib
 #          zip -r test.zip .
 #          cd ..
-
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
 
 #      - name: upload lambda libraries and source code to s3
 #        run: |
@@ -89,31 +105,27 @@ jobs:
 #            SystemTag: ${{ env.SYSTEM_TAG }}
 
 
-      - uses: aws-actions/setup-sam@v2
-        with:
-          version: "1.41.0"
-
-      - name: SAM Build
-        run: |
-          sam build \
-            --build-dir ./build \
-            --base-dir ./lambda_code \
-            --template-file ./aws/template.yaml \
-            --manifest ./aws/requirements.txt
-
+#      - uses: aws-actions/setup-sam@v2
+#        with:
+#          version: "1.41.0"
+#
 #      - name: SAM Build
 #        run: |
-#          sam build --use-container
-
-
-      - name: SAM Lambda deploy
-        run: |
-          sam deploy \
-            --template-file build/template.yaml \
-            --s3-bucket tint-master \
-            --s3-prefix gtech-auto-posting-app \
-            --region ${{ env.AWS_REGION }} \
-            --stack-name gtech-auto-posting-app-lambda \
-            --no-confirm-changeset \
-            --no-fail-on-empty-changeset \
-            --parameter-overrides Name=gtech-auto-posting-app
+#          sam build \
+#            --build-dir ./build \
+#            --base-dir ./lambda_code \
+#            --template-file ./aws/template.yaml \
+#            --manifest ./aws/requirements.txt
+#
+#
+#      - name: SAM Lambda deploy
+#        run: |
+#          sam deploy \
+#            --template-file build/template.yaml \
+#            --s3-bucket tint-master \
+#            --s3-prefix gtech-auto-posting-app \
+#            --region ${{ env.AWS_REGION }} \
+#            --stack-name gtech-auto-posting-app-lambda \
+#            --no-confirm-changeset \
+#            --no-fail-on-empty-changeset \
+#            --parameter-overrides Name=gtech-auto-posting-app
