@@ -122,7 +122,7 @@ def openURL():
 
         # photo attached
         element_attachment = driver.find_element(by=By.ID, value="bf_file_1")
-        element_attachment.send_keys(ad_pic_object.get())
+        element_attachment.send_keys(ad_pic_object.get()['Body'])
         print("Photo attached")
 
         # submit
