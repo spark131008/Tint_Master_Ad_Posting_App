@@ -17,8 +17,8 @@ ad_pic_s3_key = os.environ.get('ad_pic_s3_key')
 BIN_DIR = "/tmp/bin"
 CURR_BIN_DIR = os.getcwd() + "/bin"
 
-s3 = boto3.resource('s3')
-ad_pic_object = s3.Object(ad_pic_s3_bucket, ad_pic_s3_key)
+s3_client = boto3.client("s3")
+ad_pic_object = s3_client.get_object(Bucket=ad_pic_s3_bucket, Key=ad_pic_s3_key)
 
 def lambda_handler(event, context):
     # _init_bin("chromedriver")
@@ -122,7 +122,7 @@ def openURL():
 
         # photo attached
         element_attachment = driver.find_element(by=By.ID, value="bf_file_1")
-        element_attachment.send_keys(ad_pic_object.get()['Body'])
+        element_attachment.send_keys(ad_pic_object['Body'].read())
         print("Photo attached")
 
         # submit
