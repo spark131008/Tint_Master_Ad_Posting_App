@@ -18,30 +18,33 @@ BIN_DIR = "/tmp/bin"
 CURR_BIN_DIR = os.getcwd() + "/bin"
 
 s3_client = boto3.client("s3")
-ad_pic_object = s3_client.get_object(Bucket=ad_pic_s3_bucket, Key=ad_pic_s3_key)
+
 
 def lambda_handler(event, context):
-    # _init_bin("chromedriver")
-    openURL()
+    _init_bin()
+    # openURL()
 
-def _init_bin(executable_name):
+def _init_bin():
 
-    print(os.getcwd())
-    files_1 = [f for f in os.listdir(os.getcwd()) if os.path.isfile(os.path.join(os.getcwd(), f))]
-    print(files_1)
+    print("os.getcwd():", os.getcwd())
+    listdir = os.listdir(os.getcwd())
+    print("listdir:", listdir)
 
-    # start = time.clock()
-    if not os.path.exists(BIN_DIR):
-        print("Creating bin folder")
-        os.makedirs(BIN_DIR)
-    print("Copying binaries for " + executable_name + " in /tmp/bin")
-    currfile = os.path.join(os.getcwd(), executable_name)
-    newfile = os.path.join(BIN_DIR, executable_name)
-    shutil.copy2(currfile, newfile)
-    print("Giving new binaries permissions for lambda")
-    os.chmod(newfile, 0o775)
-    # elapsed = time.clock() - start
-    # print(executable_name + " ready in " + str(elapsed) + "s.")
+    s3_client.download_file(Bucket=ad_pic_s3_bucket,
+                            Key=ad_pic_s3_key,
+                            Filename=ad_pic_s3_key.split("/")[-1])
+
+    print("listdir:", listdir)
+
+    # if not os.path.exists(BIN_DIR):
+    #     print("Creating bin folder")
+    #     os.makedirs(BIN_DIR)
+    # print("Copying binaries for " + executable_name + " in /tmp/bin")
+    # currfile = os.path.join(os.getcwd(), executable_name)
+    # newfile = os.path.join(BIN_DIR, executable_name)
+    # shutil.copy2(currfile, newfile)
+    # print("Giving new binaries permissions for lambda")
+    # os.chmod(newfile, 0o775)
 
 def openURL():
     print('start')
