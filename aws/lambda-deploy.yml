@@ -22,12 +22,12 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Architectures:
-        - arm64
+        - x86_64
       FunctionName: !FindInMap [ Constant, Value, FuncName ]
       Role: !ImportValue gtech-ad-posting-app-lambda-iam-role-ARN
       PackageType: Image
       Code:
-        ImageUri: 532888352687.dkr.ecr.us-east-1.amazonaws.com/gtech_posting_lambda:${ImageTag}
+        ImageUri: !Sub 532888352687.dkr.ecr.us-east-1.amazonaws.com/gtech_posting_lambda:${ImageTag}
 #      Handler: !Join [ '.', [ !FindInMap [ Constant, Value, FuncName ], 'lambda_handler' ] ]
 #      Runtime: python3.9
       Timeout: 300
