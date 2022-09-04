@@ -14,8 +14,7 @@ url_gtech_2 = os.environ.get('url_gtech_2')
 ad_pic_s3_bucket = os.environ.get('ad_pic_s3_bucket')
 ad_pic_s3_key = os.environ.get('ad_pic_s3_key')
 
-BIN_DIR = "/tmp/bin"
-CURR_BIN_DIR = os.getcwd() + "/bin"
+download_dir = "/tmp/download"
 
 s3_client = boto3.client("s3")
 
@@ -30,21 +29,16 @@ def _init_bin():
     listdir = os.listdir(os.getcwd())
     print("listdir:", listdir)
 
+    if not os.path.exists(download_dir):
+        print("Creating download folder")
+        os.makedirs(download_dir)
+
+    print(f"Downloading ad image {ad_pic_s3_key} in {download_dir}")
     s3_client.download_file(Bucket=ad_pic_s3_bucket,
                             Key=ad_pic_s3_key,
-                            Filename=ad_pic_s3_key.split("/")[-1])
-
-    print("listdir:", listdir)
-
-    # if not os.path.exists(BIN_DIR):
-    #     print("Creating bin folder")
-    #     os.makedirs(BIN_DIR)
-    # print("Copying binaries for " + executable_name + " in /tmp/bin")
-    # currfile = os.path.join(os.getcwd(), executable_name)
-    # newfile = os.path.join(BIN_DIR, executable_name)
-    # shutil.copy2(currfile, newfile)
-    # print("Giving new binaries permissions for lambda")
+                            Filename=os.path.join(download_dir, ad_pic_s3_key.split("/")[-1]))
     # os.chmod(newfile, 0o775)
+    print("download_dir:", download_dir)
 
 def openURL():
     print('start')
