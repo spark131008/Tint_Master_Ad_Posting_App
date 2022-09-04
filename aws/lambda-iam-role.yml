@@ -15,6 +15,37 @@ Resources:
                   - lambda.amazonaws.com
               Action:
                 - sts:AssumeRole
+        Policies:
+          - PolicyName: !Sub "gtech-ad-posting-app-lambda-policy-${AWS::Region}"
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+              - Effect: Allow
+                Sid: "AllowS3GetObject"
+                Action:
+                  - "s3:GetObjectRetention"
+                  - "s3:DeleteObjectVersion"
+                  - "s3:GetObjectVersionTagging"
+                  - "s3:PutObjectLegalHold"
+                  - "s3:GetObjectLegalHold"
+                  - "s3:List*"
+                  - "s3:ListBucket"
+                  - "s3:GetObjectVersionTorrent"
+                  - "s3:PutObject"
+                  - "s3:GetObjectAcl"
+                  - "s3:GetObject"
+                  - "s3:GetObjectTorrent"
+                  - "s3:PutObjectRetention"
+                  - "s3:GetObjectVersionAcl"
+                  - "s3:GetObjectTagging"
+                  - "s3:GetObjectVersionForReplication"
+                  - "s3:DeleteObject"
+                  - "s3:GetObjectVersion"
+                Resource:
+                  - arn:aws:s3:::tint-master
+                  - arn:aws:s3:::tint-master/ad_pic_storage/*"
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 
 Outputs:
   GTechAutoPostingLambdaRoleARN:

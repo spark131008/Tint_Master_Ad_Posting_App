@@ -18,7 +18,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Architectures:
-        - x86_64
+        - arm64
       FunctionName: !FindInMap [ Constant, Value, FuncName ]
       Role: !ImportValue gtech-ad-posting-app-lambda-iam-role-ARN
       PackageType: Image
