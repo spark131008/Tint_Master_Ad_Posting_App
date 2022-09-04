@@ -27,7 +27,7 @@ Resources:
                   - s3-object-lambda:*
                 Resource:
                   - arn:aws:s3:::tint-master
-                  - arn:aws:s3:::tint-master/ad_pic_storage/*"
+                  - arn:aws:s3:::tint-master/ad_pic_storage/*
         ManagedPolicyArns:
           - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 
