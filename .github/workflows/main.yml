@@ -43,6 +43,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build, tag, and push image to Amazon ECR
+        id: image-build
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: gtech_posting_lambda
@@ -111,6 +112,8 @@ jobs:
           template: aws/lambda-deploy.yml
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_NAMED_IAM
+          parameter-overrides: >-
+            ImageTag=${{ github.run_number }}
           tags: |
             SystemTag: ${{ env.SYSTEM_TAG }}
 

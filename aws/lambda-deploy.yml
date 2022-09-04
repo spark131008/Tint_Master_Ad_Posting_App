@@ -6,6 +6,10 @@ Parameters:
     Type: String
     Default: lambda
     Description: Project name
+  ImageTag:
+    Type: Number
+    Default: 0
+    Description: Docker Image Tag
 
 Mappings:
   Constant:
@@ -23,7 +27,7 @@ Resources:
       Role: !ImportValue gtech-ad-posting-app-lambda-iam-role-ARN
       PackageType: Image
       Code:
-        ImageUri: 532888352687.dkr.ecr.us-east-1.amazonaws.com/gtech_posting_lambda:latest
+        ImageUri: 532888352687.dkr.ecr.us-east-1.amazonaws.com/gtech_posting_lambda:${ImageTag}
 #      Handler: !Join [ '.', [ !FindInMap [ Constant, Value, FuncName ], 'lambda_handler' ] ]
 #      Runtime: python3.9
       Timeout: 300
