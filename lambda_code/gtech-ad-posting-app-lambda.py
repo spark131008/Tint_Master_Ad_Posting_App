@@ -12,7 +12,7 @@ login_pw = os.environ.get('login_pw')
 url_gtech_1 = os.environ.get('url_gtech_1')
 url_gtech_2 = os.environ.get('url_gtech_2')
 ad_pic_s3_bucket = os.environ.get('ad_pic_s3_bucket')
-ad_pic_s3_key = os.environ.get('ad_pic_s3_key')
+ad_pic_s3_prefix = os.environ.get('ad_pic_s3_prefix')
 
 download_dir = "/tmp/download"
 
@@ -20,11 +20,28 @@ s3_client = boto3.client("s3")
 
 
 def lambda_handler(event, context):
-    _init_bin()
+    download_ad_image()
     # openURL()
+    clean_tmp_folder()
 
-def _init_bin():
 
+def find_latest_ad_image():
+    s3_keys = s3_client.list_objects_v2(Bucket=ad_pic_s3_bucket,
+                                        Prefix=ad_pic_s3_prefix
+                                        )
+    s3keysContents = s3_keys['Contents']
+
+
+    # Creating a dictionary with s3key_name and its modified date
+    key_dict = {key['Key']: key['LastModified'] for key in s3keysContents if key['Key'].endswith('.jpeg')}
+
+    # Sorting the dictionary based on the modified date
+    key_dict = dict(sorted(key_dict.items(), key=lambda x: (x[1], x[0])))
+
+    # Returning the latest modified file's s3 key name
+    return list(key_dict)[-1]
+
+def download_ad_image():
     print("os.getcwd():", os.getcwd())
     listdir = os.listdir(os.getcwd())
     print("listdir:", listdir)
@@ -33,11 +50,16 @@ def _init_bin():
         print("Creating download folder")
         os.makedirs(download_dir)
 
+    ad_pic_s3_key = find_latest_ad_image()
     print(f"Downloading ad image {ad_pic_s3_key} in {download_dir}")
     s3_client.download_file(Bucket=ad_pic_s3_bucket,
                             Key=ad_pic_s3_key,
                             Filename=os.path.join(download_dir, ad_pic_s3_key.split("/")[-1]))
     # os.chmod(newfile, 0o775)
+    print("download_dir:", os.listdir(download_dir))
+
+def clean_tmp_folder():
+    os.removedirs(download_dir)
     print("download_dir:", os.listdir(download_dir))
 
 def openURL():
@@ -119,7 +141,7 @@ def openURL():
 
         # photo attached
         element_attachment = driver.find_element(by=By.ID, value="bf_file_1")
-        element_attachment.send_keys(ad_pic_object)
+        # element_attachment.send_keys(ad_pic_object)
         print("Photo attached")
 
         # submit
@@ -129,7 +151,3 @@ def openURL():
 
     except Exception as e:
         print(e)
-
-    finally:
-        print('done')
-        # time.sleep(2)
