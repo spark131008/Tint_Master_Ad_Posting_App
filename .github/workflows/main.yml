@@ -42,22 +42,15 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - uses: uraimo/run-on-arch-action@v2
-        name: Run commands
-        id: runcmd
+      - name: Build, tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: gtech_posting_lambda
           IMAGE_TAG: latest
-        with:
-          arch: aarch64
-          distro: ubuntu_latest
-          githubToken: ${{ github.token }}
-          run: |
-            echo "${{ github.run_number }}"
-            cd lambda_code
-            docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-            docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        run: |
+          cd lambda_code
+          docker build --platform=linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
 #      - name: Build, tag, and push image to Amazon ECR
 #        env:
