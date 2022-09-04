@@ -2,6 +2,22 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Sets up IAM Role for dmp-ping-process Lambda.
 
 Resources:
+  GTechAutoPostingLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Managed policy for GTECH Posting Lambda
+      ManagedPolicyName: !Sub "gtech-ad-posting-app-lambda-policy-${AWS::Region}"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Sid: "AllowS3GetObject"
+            Action:
+              - s3:*
+              - s3-object-lambda:*
+            Resource:
+              - arn:aws:s3:::tint-master
+              - arn:aws:s3:::tint-master/ad_pic_storage/*
   GTechAutoPostingLambdaRole:
       Type: AWS::IAM::Role
       Properties:
@@ -15,21 +31,9 @@ Resources:
                   - lambda.amazonaws.com
               Action:
                 - sts:AssumeRole
-        Policies:
-          - PolicyName: !Sub "gtech-ad-posting-app-lambda-policy-${AWS::Region}"
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-              - Effect: Allow
-                Sid: "AllowS3GetObject"
-                Action:
-                  - s3:*
-                  - s3-object-lambda:*
-                Resource:
-                  - arn:aws:s3:::tint-master
-                  - arn:aws:s3:::tint-master/ad_pic_storage/*
         ManagedPolicyArns:
           - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+          - !Ref GTechAutoPostingLambdaPolicy
 
 Outputs:
   GTechAutoPostingLambdaRoleARN:
