@@ -38,7 +38,7 @@ def _init_bin():
                             Key=ad_pic_s3_key,
                             Filename=os.path.join(download_dir, ad_pic_s3_key.split("/")[-1]))
     # os.chmod(newfile, 0o775)
-    print("download_dir:", download_dir)
+    print("download_dir:", os.listdir(download_dir))
 
 def openURL():
     print('start')
