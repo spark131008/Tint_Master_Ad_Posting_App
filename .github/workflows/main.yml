@@ -23,7 +23,7 @@ jobs:
   # This workflow contains a single job called "build"
   build_deploy:
     # The type of runner that the job will run on
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu_latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -45,23 +45,28 @@ jobs:
       - uses: uraimo/run-on-arch-action@v2
         name: Run commands
         id: runcmd
-        with:
-          arch: armv7
-          distro: ubuntu18.04
-          githubToken: ${{ github.token }}
-          run: |
-            uname -a
-            echo ::set-output name=uname::$(uname -a)
-
-      - name: Build, tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: gtech_posting_lambda
           IMAGE_TAG: ${GITHUB_RUN_NUMBER}
-        run: |
-          cd lambda_code
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        with:
+          arch: aarch64
+          distro: ubuntu_latest
+          githubToken: ${{ github.token }}
+          run: |
+            cd lambda_code
+            docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+            docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+#      - name: Build, tag, and push image to Amazon ECR
+#        env:
+#          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#          ECR_REPOSITORY: gtech_posting_lambda
+#          IMAGE_TAG: ${GITHUB_RUN_NUMBER}
+#        run: |
+#          cd lambda_code
+#          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+#          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
 #      - name: Set up Python
 #        uses: actions/setup-python@v3
