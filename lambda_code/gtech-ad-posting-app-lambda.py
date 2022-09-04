@@ -20,8 +20,8 @@ s3_client = boto3.client("s3")
 
 
 def lambda_handler(event, context):
-    download_ad_image()
-    # openURL()
+    img_full_path = download_ad_image()
+    openURL(img_full_path)
     clean_tmp_folder()
 
 
@@ -29,17 +29,17 @@ def find_latest_ad_image():
     s3_keys = s3_client.list_objects_v2(Bucket=ad_pic_s3_bucket,
                                         Prefix=ad_pic_s3_prefix
                                         )
-    s3keysContents = s3_keys['Contents']
-
+    s3_keys_Contents = s3_keys['Contents']
 
     # Creating a dictionary with s3key_name and its modified date
-    key_dict = {key['Key']: key['LastModified'] for key in s3keysContents if key['Key'].endswith('.jpeg')}
+    key_dict = {key['Key']: key['LastModified'] for key in s3_keys_Contents if key['Key'].endswith('.jpeg')}
 
     # Sorting the dictionary based on the modified date
     key_dict = dict(sorted(key_dict.items(), key=lambda x: (x[1], x[0])))
 
     # Returning the latest modified file's s3 key name
     return list(key_dict)[-1]
+
 
 def download_ad_image():
     print("os.getcwd():", os.getcwd())
@@ -52,17 +52,23 @@ def download_ad_image():
 
     ad_pic_s3_key = find_latest_ad_image()
     print(f"Downloading ad image {ad_pic_s3_key} in {download_dir}")
+    file_name_in_download_dir = os.path.join(download_dir, ad_pic_s3_key.split("/")[-1])
     s3_client.download_file(Bucket=ad_pic_s3_bucket,
                             Key=ad_pic_s3_key,
-                            Filename=os.path.join(download_dir, ad_pic_s3_key.split("/")[-1]))
+                            Filename=file_name_in_download_dir
+                            )
     # os.chmod(newfile, 0o775)
     print("download_dir:", os.listdir(download_dir))
+    return file_name_in_download_dir
+
 
 def clean_tmp_folder():
+    print("Deleting /tmp/download directory")
     shutil.rmtree(download_dir)
-    print("tmp_dir:", os.listdir("/tmp"))
+    print("Delete completed. os.listdir('/tmp'):", os.listdir("/tmp"))
 
-def openURL():
+
+def openURL(img_full_path):
     print('start')
     content = '''
 <p class="li1" style="font-size:12px;line-height:0.5;font-family:'Helvetica Neue';"><span style="font-size:26px;">
@@ -140,7 +146,7 @@ def openURL():
 
     # photo attached
     element_attachment = driver.find_element(by=By.ID, value="bf_file_1")
-    # element_attachment.send_keys(ad_pic_object)
+    element_attachment.send_keys(img_full_path)
     print("Photo attached")
 
     # submit
