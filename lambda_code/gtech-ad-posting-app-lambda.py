@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 import json
 from selenium import webdriver
@@ -15,8 +16,10 @@ download_dir = "/tmp/download"
 
 s3_client = boto3.client("s3")
 
-def lambda_handler(event: str, context):
-    payload = json.loads(event)
+def lambda_handler(event: dict, context):
+    print(event)
+    print(type(event))
+    payload = event
     img_local_download_path = download_ad_image(payload)
     html_content = html_file_reader(payload)
     ad_posting(img_local_download_path, html_content)
@@ -54,7 +57,7 @@ def find_latest_ad_image(payload: dict) -> str:
     s3_keys_contents = s3_keys['Contents']
 
     # Creating a sorted list of keys
-    sorted_keys = sorted([key['Key'] for key in s3_keys_contents if key['Key'].contains(company_name) and key['Key'].endswith('.jpeg')])
+    sorted_keys = sorted([key['Key'] for key in s3_keys_contents if re.match('.*{}.*\.jpeg'.format(company_name), key['Key'])])
 
     # Returning the latest modified file's s3 key name
     return sorted_keys[-1]
@@ -68,7 +71,7 @@ def html_file_reader(payload: dict) -> str:
                                         Prefix=ad_html_s3_prefix
                                         )
     s3_keys_contents = s3_keys['Contents']
-    html_key = [key['Key'] for key in s3_keys_contents if key['Key'].contains(company_name) and key['Key'].endswith('.html')][0]
+    html_key = [key['Key'] for key in s3_keys_contents if re.match('.*{}.*\.html'.format(company_name), key['Key'])][0]
     data = s3_client.get_object(Bucket=gtechapp_bucket, Key=html_key)
     contents = data['Body'].read()
     print(contents.decode("utf-8"))

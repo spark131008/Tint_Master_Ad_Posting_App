@@ -15,7 +15,8 @@ Mappings:
   Constant:
     Value:
       FuncName: gtech-ad-posting-app-lambda
-      LambdaMemorySize: 2048
+      LambdaMemorySize: 1024
+      EphemeralStorageSize: 512
 
 Resources:
   GTechADPostingLambda:
@@ -28,6 +29,8 @@ Resources:
           region_name: !Sub ${AWS::Region}
           secret_name: gtechadapp/credentials
           gtechapp_bucket: gtech-posting-app
+      EphemeralStorage:
+        Size: !FindInMap [ Constant, Value, EphemeralStorageSize ]
       FunctionName: !FindInMap [ Constant, Value, FuncName ]
       Role: !ImportValue gtech-ad-posting-app-lambda-iam-role-ARN
       PackageType: Image
