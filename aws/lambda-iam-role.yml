@@ -1,7 +1,19 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Sets up IAM Role for dmp-ping-process Lambda.
 
+Parameters:
+  Name:
+    Type: String
+    Default: lambda
+    Description: Project name
+
 Resources:
+  GTechSecretManager:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: 'Store the GTech App related secrets in SecretManager'
+      Name: gtechadapp/credentials
+      SecretString: "{\"gtech_login_url\": \"\", \"gtech_ad_url\": \"\", \"tint_master_id\": \"\", \"tint_master_pw\": \"\"}"
   GTechAutoPostingLambdaPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
@@ -16,8 +28,17 @@ Resources:
               - s3:*
               - s3-object-lambda:*
             Resource:
-              - arn:aws:s3:::tint-master
-              - arn:aws:s3:::tint-master/ad_pic_storage/*
+              - arn:aws:s3:::gtech-posting-app
+              - arn:aws:s3:::gtech-posting-app/*
+          - Effect: Allow
+            Sid: "Allow SecretManager"
+            Action:
+              - secretsmanager:ListSecrets
+              - secretsmanager:ListSecretVersionIds
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Resource:
+              - !Ref GTechSecretManager
   GTechAutoPostingLambdaRole:
       Type: AWS::IAM::Role
       Properties:

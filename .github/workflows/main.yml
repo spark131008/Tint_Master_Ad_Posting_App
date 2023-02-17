@@ -91,9 +91,9 @@ jobs:
 #          zip -r test.zip .
 #          cd ..
 
-#      - name: upload lambda libraries and source code to s3
-#        run: |
-#          aws s3 cp ./lib/test.zip s3://tint-master/gtech-auto-posting-app/test.zip
+      - name: upload html scripts to s3
+        run: |
+          aws s3 cp ./html_scripts/* s3://gtech-posting-app/ad-html-script-store/
 
       - name: Create IAM Role for GTECH AUTO POSTING Lambda
         uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3

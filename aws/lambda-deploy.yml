@@ -23,6 +23,11 @@ Resources:
     Properties:
       Architectures:
         - x86_64
+      Environment:
+        Variables:
+          region_name: !Sub ${AWS::Region}
+          secret_name: gtechadapp/credentials
+          gtechapp_bucket: gtech-posting-app
       FunctionName: !FindInMap [ Constant, Value, FuncName ]
       Role: !ImportValue gtech-ad-posting-app-lambda-iam-role-ARN
       PackageType: Image
