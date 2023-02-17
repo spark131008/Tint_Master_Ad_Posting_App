@@ -16,6 +16,7 @@ download_dir = "/tmp/download"
 
 s3_client = boto3.client("s3")
 
+
 def lambda_handler(event: dict, context):
     print(event)
     print(type(event))
@@ -54,18 +55,18 @@ def find_latest_ad_image(payload: dict) -> str:
     s3_keys = s3_client.list_objects_v2(Bucket=gtechapp_bucket,
                                         Prefix=ad_pic_s3_prefix
                                         )
-
-    print(s3_keys)
     s3_keys_contents = s3_keys['Contents']
-    print(s3_keys_contents)
-    print([key['Key'] for key in s3_keys_contents])
 
     # Creating a sorted list of keys
-    sorted_keys = sorted([key['Key'] for key in s3_keys_contents if re.match('.*{}.*\.jpeg'.format(company_name), key['Key'])])
-    print(sorted_keys)
-
-    # Returning the latest modified file's s3 key name
-    return sorted_keys[-1]
+    sorted_keys = sorted(
+        [key['Key'] for key in s3_keys_contents if re.match('.*{}.*\.jpeg'.format(company_name), key['Key'])])
+    if sorted_keys:
+        # Returning the latest modified file's s3 key name
+        res = sorted_keys[-1]
+        print(res)
+        return res
+    else:
+        print("No key to download")
 
 
 def html_file_reader(payload: dict) -> str:
@@ -76,11 +77,17 @@ def html_file_reader(payload: dict) -> str:
                                         Prefix=ad_html_s3_prefix
                                         )
     s3_keys_contents = s3_keys['Contents']
-    html_key = [key['Key'] for key in s3_keys_contents if re.match('.*{}.*\.html'.format(company_name), key['Key'])][0]
-    data = s3_client.get_object(Bucket=gtechapp_bucket, Key=html_key)
-    contents = data['Body'].read()
-    print(contents.decode("utf-8"))
-    return contents.decode("utf-8")
+    print(s3_keys_contents)
+    print([key['Key'] for key in s3_keys_contents])
+
+    html_keys = [key['Key'] for key in s3_keys_contents if re.match('.*{}.*\.html'.format(company_name), key['Key'])]
+    if html_keys:
+        file_name = html_keys[0]
+        data = s3_client.get_object(Bucket=gtechapp_bucket, Key=file_name)
+        contents = data['Body'].read()
+        return contents.decode("utf-8")
+    else:
+        print("No html file to read")
 
 
 def clean_tmp_folder():
@@ -111,7 +118,6 @@ def ad_posting(local_file_path, html_content):
 
     driver.get(secret["gtech_login_url"])
     print('opened web browser')
-
 
     element_id = driver.find_element(by=By.ID, value="login_id")
     element_id.send_keys(secret["tint_master_id"])
