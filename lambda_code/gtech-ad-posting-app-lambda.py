@@ -15,14 +15,15 @@ download_dir = "/tmp/download"
 
 s3_client = boto3.client("s3")
 
-def lambda_handler(event: dict, context):
-    img_local_download_path = download_ad_image(event)
-    html_content = html_file_reader(event)
+def lambda_handler(event: str, context):
+    payload = json.loads(event)
+    img_local_download_path = download_ad_image(payload)
+    html_content = html_file_reader(payload)
     ad_posting(img_local_download_path, html_content)
     clean_tmp_folder()
 
 
-def download_ad_image(event: dict) -> str:
+def download_ad_image(payload: dict) -> str:
     print("os.getcwd():", os.getcwd())
     listdir = os.listdir(os.getcwd())
     print("listdir:", listdir)
@@ -31,7 +32,7 @@ def download_ad_image(event: dict) -> str:
         print("Creating download folder")
         os.makedirs(download_dir)
 
-    ad_pic_s3_key = find_latest_ad_image(event)
+    ad_pic_s3_key = find_latest_ad_image(payload)
     print(f"Downloading ad image {ad_pic_s3_key} in {download_dir}")
     file_name_in_download_dir = os.path.join(download_dir, ad_pic_s3_key.split("/")[-1])
     s3_client.download_file(Bucket=gtechapp_bucket,
@@ -43,9 +44,9 @@ def download_ad_image(event: dict) -> str:
     return file_name_in_download_dir
 
 
-def find_latest_ad_image(event: dict) -> str:
-    company_name = event['company_name']
-    ad_pic_s3_prefix = event['ad_pic_s3_prefix']
+def find_latest_ad_image(payload: dict) -> str:
+    company_name = payload['company_name']
+    ad_pic_s3_prefix = payload['ad_pic_s3_prefix']
 
     s3_keys = s3_client.list_objects_v2(Bucket=gtechapp_bucket,
                                         Prefix=ad_pic_s3_prefix
@@ -59,9 +60,9 @@ def find_latest_ad_image(event: dict) -> str:
     return sorted_keys[-1]
 
 
-def html_file_reader(event: dict) -> str:
-    company_name = event['company_name']
-    ad_html_s3_prefix = event['ad_html_s3_prefix']
+def html_file_reader(payload: dict) -> str:
+    company_name = payload['company_name']
+    ad_html_s3_prefix = payload['ad_html_s3_prefix']
 
     s3_keys = s3_client.list_objects_v2(Bucket=gtechapp_bucket,
                                         Prefix=ad_html_s3_prefix
