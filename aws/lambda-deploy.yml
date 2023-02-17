@@ -29,6 +29,8 @@ Resources:
           region_name: !Sub ${AWS::Region}
           secret_name: gtechadapp/credentials
           gtechapp_bucket: gtech-posting-app
+          ad_pic_s3_prefix: ad-picture-store/
+          ad_html_s3_prefix: ad-html-script-store/
       EphemeralStorage:
         Size: !FindInMap [ Constant, Value, EphemeralStorageSize ]
       FunctionName: !FindInMap [ Constant, Value, FuncName ]

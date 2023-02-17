@@ -11,6 +11,8 @@ import boto3
 region_name = os.environ.get('region_name')
 secret_name = os.environ.get('secret_name')
 gtechapp_bucket = os.environ.get('gtechapp_bucket')
+ad_pic_s3_prefix = os.environ.get('ad_pic_s3_prefix')
+ad_html_s3_prefix = os.environ.get('ad_html_s3_prefix')
 
 download_dir = "/tmp/download"
 
@@ -54,7 +56,6 @@ def download_ad_image(payload: dict) -> str:
 
 def find_latest_ad_image(payload: dict) -> str:
     company_name = payload['company_name']
-    ad_pic_s3_prefix = payload['ad_pic_s3_prefix']
 
     s3_keys = s3_client.list_objects_v2(Bucket=gtechapp_bucket,
                                         Prefix=ad_pic_s3_prefix
@@ -75,7 +76,6 @@ def find_latest_ad_image(payload: dict) -> str:
 
 def html_file_reader(payload: dict) -> str:
     company_name = payload['company_name']
-    ad_html_s3_prefix = payload['ad_html_s3_prefix']
 
     s3_keys = s3_client.list_objects_v2(Bucket=gtechapp_bucket,
                                         Prefix=ad_html_s3_prefix
