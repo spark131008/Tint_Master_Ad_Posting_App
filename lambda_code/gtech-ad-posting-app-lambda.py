@@ -23,8 +23,11 @@ def lambda_handler(event: dict, context):
     payload = event
     img_local_download_path = download_ad_image(payload)
     html_content = html_file_reader(payload)
-    ad_posting(img_local_download_path, html_content)
-    clean_tmp_folder()
+    if img_local_download_path and html_content:
+        ad_posting(img_local_download_path, html_content)
+        clean_tmp_folder()
+    else:
+        print("Some parameters missing. Skip running the job")
 
 
 def download_ad_image(payload: dict) -> str:
@@ -37,15 +40,16 @@ def download_ad_image(payload: dict) -> str:
         os.makedirs(download_dir)
 
     ad_pic_s3_key = find_latest_ad_image(payload)
-    print(f"Downloading ad image {ad_pic_s3_key} in {download_dir}")
-    file_name_in_download_dir = os.path.join(download_dir, ad_pic_s3_key.split("/")[-1])
-    s3_client.download_file(Bucket=gtechapp_bucket,
-                            Key=ad_pic_s3_key,
-                            Filename=file_name_in_download_dir
-                            )
-    # os.chmod(newfile, 0o775)
-    print("download_dir:", os.listdir(download_dir))
-    return file_name_in_download_dir
+    if ad_pic_s3_key:
+        print(f"Downloading ad image {ad_pic_s3_key} in {download_dir}")
+        file_name_in_download_dir = os.path.join(download_dir, ad_pic_s3_key.split("/")[-1])
+        s3_client.download_file(Bucket=gtechapp_bucket,
+                                Key=ad_pic_s3_key,
+                                Filename=file_name_in_download_dir
+                                )
+        # os.chmod(newfile, 0o775)
+        print("download_dir:", os.listdir(download_dir))
+        return file_name_in_download_dir
 
 
 def find_latest_ad_image(payload: dict) -> str:
@@ -77,8 +81,6 @@ def html_file_reader(payload: dict) -> str:
                                         Prefix=ad_html_s3_prefix
                                         )
     s3_keys_contents = s3_keys['Contents']
-    print(s3_keys_contents)
-    print([key['Key'] for key in s3_keys_contents])
 
     html_keys = [key['Key'] for key in s3_keys_contents if re.match('.*{}.*\.html'.format(company_name), key['Key'])]
     if html_keys:
