@@ -54,10 +54,15 @@ def find_latest_ad_image(payload: dict) -> str:
     s3_keys = s3_client.list_objects_v2(Bucket=gtechapp_bucket,
                                         Prefix=ad_pic_s3_prefix
                                         )
+
+    print(s3_keys)
     s3_keys_contents = s3_keys['Contents']
+    print(s3_keys_contents)
+    print([key['Key'] for key in s3_keys_contents])
 
     # Creating a sorted list of keys
     sorted_keys = sorted([key['Key'] for key in s3_keys_contents if re.match('.*{}.*\.jpeg'.format(company_name), key['Key'])])
+    print(sorted_keys)
 
     # Returning the latest modified file's s3 key name
     return sorted_keys[-1]
