@@ -117,6 +117,9 @@ jobs:
           tags: |
             SystemTag: ${{ env.SYSTEM_TAG }}
 
+      - name: Run echo
+        run: echo "${{ needs.steps.build-image.outputs.ImageUri }}"
+
       - name: Create GTECH AUTO POSTING Lambda
         uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
         with:
