@@ -94,7 +94,6 @@ jobs:
     name: Deploy
     needs: [build]
     runs-on: ubuntu-latest
-    environment: ${{ env.ENVIRONMENT }}
 
     steps:
       - name: Check out code
@@ -125,7 +124,7 @@ jobs:
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_NAMED_IAM
           parameter-overrides: >-
-            ImageUri=${{ build.steps.build-image.outputs.ImageUri }}
+            ImageUri=${{ needs.steps.build-image.outputs.ImageUri }}
           tags: |
             SystemTag: ${{ env.SYSTEM_TAG }}
 
