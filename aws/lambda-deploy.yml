@@ -37,7 +37,7 @@ Resources:
       Role: !ImportValue gtech-ad-posting-app-lambda-iam-role-ARN
       PackageType: Image
       Code:
-        ImageUri: !Sub ${Image}
+        ImageUri: !Sub ${ImageUri}
 #      Handler: !Join [ '.', [ !FindInMap [ Constant, Value, FuncName ], 'lambda_handler' ] ]
 #      Runtime: python3.9
       Timeout: 300
