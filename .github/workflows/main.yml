@@ -61,8 +61,6 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "ImageUri=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-    outputs:
-      image_uri: ${{ steps.image-build.outputs.ImageUri }}
 
 #      - name: Set up Python
 #        uses: actions/setup-python@v3
@@ -123,7 +121,9 @@ jobs:
         run: |
           echo "${{ env.AWS_REGION }}"
           echo "${{ env.SYSTEM_TAG }}"
-          echo "${{ needs.build.outputs.image_uri }}"
+          echo "${{ env.ECR_REGISTRY }}"
+          echo "${{ env.ECR_REPOSITORY }}"
+          echo "${{ env.IMAGE_TAG }}"
 
       - name: Create GTECH AUTO POSTING Lambda
         uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
@@ -133,7 +133,7 @@ jobs:
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_NAMED_IAM
           parameter-overrides: >-
-            ImageUri=${{ needs.build.outputs.image_uri }}
+            ImageUri=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
           tags: |
             SystemTag: ${{ env.SYSTEM_TAG }}
 
