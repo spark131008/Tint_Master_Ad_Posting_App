@@ -6,7 +6,9 @@ name: CI/CD
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: [ "prod" ]
+  pull_request:
+    branches: [ "prod" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch: {}
@@ -14,6 +16,7 @@ on:
 env:
   AWS_REGION: us-east-1                   # set this to your preferred AWS region, e.g. us-west-1
   SYSTEM_TAG: GTECH-AUTO-POSTING-APP
+  ENVIRONMENT: prod
 
 permissions:
   contents: read
@@ -21,8 +24,9 @@ permissions:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build_deploy:
+  build:
     # The type of runner that the job will run on
+    name: Build
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -38,30 +42,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build, tag, and push image to Amazon ECR
-        id: image-build
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: gtech_posting_lambda
-          IMAGE_TAG: ${{ github.run_number }}
+      - name: upload html scripts to s3
         run: |
-          cd lambda_code
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-#      - name: Build, tag, and push image to Amazon ECR
-#        env:
-#          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-#          ECR_REPOSITORY: gtech_posting_lambda
-#          IMAGE_TAG: ${GITHUB_RUN_NUMBER}
-#        run: |
-#          cd lambda_code
-#          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-#          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          aws s3 cp ./html_scripts/* s3://gtech-posting-app/ad-html-script-store/
 
 #      - name: Set up Python
 #        uses: actions/setup-python@v3
@@ -91,9 +74,38 @@ jobs:
 #          zip -r test.zip .
 #          cd ..
 
-      - name: upload html scripts to s3
+  deploy:
+    name: Deploy
+    needs: [build]
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: image-build
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: gtech_posting_lambda
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          aws s3 cp ./html_scripts/* s3://gtech-posting-app/ad-html-script-store/
+          cd lambda_code
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "ImageUri=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
       - name: Create IAM Role for GTECH AUTO POSTING Lambda
         uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
@@ -113,7 +125,7 @@ jobs:
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_NAMED_IAM
           parameter-overrides: >-
-            ImageTag=${{ github.run_number }}
+            ImageUri=${{ steps.image-build.outputs.ImageUri }}
           tags: |
             SystemTag: ${{ env.SYSTEM_TAG }}
 
