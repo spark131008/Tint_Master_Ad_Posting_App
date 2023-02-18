@@ -120,7 +120,10 @@ jobs:
             SystemTag: ${{ env.SYSTEM_TAG }}
 
       - name: Run echo
-        run: echo "${{ needs.build.outputs.image_uri }}"
+        run: |
+          echo "${{ env.AWS_REGION }}"
+          echo "${{ env.SYSTEM_TAG }}"
+          echo "${{ needs.build.outputs.image_uri }}"
 
       - name: Create GTECH AUTO POSTING Lambda
         uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
