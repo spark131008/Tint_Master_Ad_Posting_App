@@ -5,7 +5,7 @@ Resources:
   TintMasterBridgeRule:
     Type: AWS::Events::Rule
     Properties:
-      Name: tint-master-eventbridge-rule
+      Name: GTech-AD-Posting-tint-master
       Description: AWS EventBridge rule for Tint Master
       ScheduleExpression: "cron(0 12 ? * 2,5 *)"
       State: ENABLED
