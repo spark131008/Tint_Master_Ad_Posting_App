@@ -20,16 +20,14 @@ s3_client = boto3.client("s3")
 
 
 def lambda_handler(event: dict, context):
-    print(event)
-    print(type(event))
-    payload = event
-    img_local_download_path = download_ad_image(payload)
-    html_content = html_file_reader(payload)
-    if img_local_download_path and html_content:
-        ad_posting(img_local_download_path, html_content)
+    company_name = event['company_name']
+    img_local_download_path = download_ad_image(event)
+    html_content = html_file_reader(event)
+    if html_content:
+        ad_posting(html_content, img_local_download_path, company_name)
         clean_tmp_folder()
     else:
-        print("Some parameters missing. Skip running the job")
+        print("html_content is missing. Skip running the job")
 
 
 def download_ad_image(payload: dict) -> str:
@@ -98,7 +96,7 @@ def clean_tmp_folder():
     print("Delete completed. os.listdir('/tmp'):", os.listdir("/tmp"))
 
 
-def ad_posting(local_file_path, html_content):
+def ad_posting( html_content: str, img_local_download_path: str, company_name: str):
     print('start')
     options = webdriver.ChromeOptions()
     options.binary_location = '/opt/chrome/chrome'
@@ -122,9 +120,9 @@ def ad_posting(local_file_path, html_content):
     print('opened web browser')
 
     element_id = driver.find_element(by=By.ID, value="login_id")
-    element_id.send_keys(secret["tint_master_id"])
+    element_id.send_keys(secret[f"{company_name}_id"])
     element_pwd = driver.find_element(by=By.ID, value="login_pw")
-    element_pwd.send_keys(secret["tint_master_pw"])
+    element_pwd.send_keys(secret[f"{company_name}_pw"])
     print('entered id/pwd')
 
     element_click1 = driver.find_element(by=By.CLASS_NAME, value='btn_submit')
@@ -151,10 +149,12 @@ def ad_posting(local_file_path, html_content):
     element_subject.send_keys(html_content)
     print('content typed')
 
-    # photo attached
-    element_attachment = driver.find_element(by=By.ID, value="bf_file_1")
-    element_attachment.send_keys(local_file_path)
-    print("Photo attached")
+    # Only attach an image when it's available. If not, then skip attaching.
+    if img_local_download_path:
+        # photo attached
+        element_attachment = driver.find_element(by=By.ID, value="bf_file_1")
+        element_attachment.send_keys(img_local_download_path)
+        print("Photo attached")
 
     # submit
     element_submit_btn = driver.find_element(by=By.ID, value='btn_submit')
