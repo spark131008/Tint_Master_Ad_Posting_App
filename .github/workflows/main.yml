@@ -44,7 +44,7 @@ jobs:
 
       - name: upload html scripts to s3
         run: |
-          aws s3 cp ./html_scripts/* s3://gtech-posting-app/ad-html-script-store/
+          aws s3 cp ./html_scripts/ s3://gtech-posting-app/ad-html-script-store/ --recursive
 
 #      - name: Set up Python
 #        uses: actions/setup-python@v3
