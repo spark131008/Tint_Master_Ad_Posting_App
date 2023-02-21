@@ -2,6 +2,17 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: EventBridge Rule creation
 
 Resources:
+  AdminBridgeRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: GTech-AD-Posting-tint-master
+      Description: AWS EventBridge rule for Tint Master
+      ScheduleExpression: "cron(0 14 * * ? *)"
+      State: ENABLED
+      Targets:
+        - Arn: !ImportValue gtech-ad-posting-app-lambda-func-ARN
+          Id: GTech-AD-Posting-Schedule
+          Input: '{"company_name": "admin"}'
   TintMasterBridgeRule:
     Type: AWS::Events::Rule
     Properties:
