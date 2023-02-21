@@ -5,8 +5,8 @@ Resources:
   AdminBridgeRule:
     Type: AWS::Events::Rule
     Properties:
-      Name: GTech-AD-Posting-tint-master
-      Description: AWS EventBridge rule for Tint Master
+      Name: GTech-AD-Posting-admin
+      Description: AWS EventBridge rule for Admin AD posting
       ScheduleExpression: "cron(0 14 * * ? *)"
       State: ENABLED
       Targets:
